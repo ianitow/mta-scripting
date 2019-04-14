@@ -133,7 +133,7 @@ button:active{
 	self.panelLabel:setBackground(tocolor(0,0,0,0))
     self.panelExtern:add(self.panelLabel)
 
-    self.labelEditNome = Label("NICK:")
+    self.labelEditNome = Label("NOME:")
     self.labelEditNome:setForeground(tocolor(255,255,255,255))
     self.labelEditNome:setBackground(tocolor(0,0,0))
     self.labelEditNome:setScale(scale)
