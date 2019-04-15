@@ -6,8 +6,9 @@
 		<file src="Gfx/logo.png"/>
 		<script src="Shared/core.luac" type="shared" /> 
 		<script src="Shared/framework.lua" type="shared" /> 
-
+		<script src="Shared/config.lua" type="shared" /> 
+			<script src="Client/Identidade.lua" type="client" /> 
 		<script src="Server/Account_s.lua" type="server" /> 
-		<script src="Client/Identidade.lua" type="client" /> 
+	
 		
 </meta>

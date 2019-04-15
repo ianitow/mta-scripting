@@ -81,7 +81,7 @@ button:active{
     local margin = 28
     local alignment = Label.CENTER
 
-    self.labelNick = Label("NICK:")
+    self.labelNick = Label("NICK: "..localPlayer:getName())
     self.labelNick:setForeground(tocolor(255,255,255,255))
     self.labelNick:setBackground(tocolor(0,0,0))
     self.labelNick:setScale(scale)
@@ -89,7 +89,7 @@ button:active{
     self.labelNick:setAlignment(alignment)
     self.panelInfo:add(self.labelNick)
 
-    self.labelVida = Label("VIDA:")
+    self.labelVida = Label("VIDA: #FF0000"..math.floor(localPlayer:getHealth()).."%")
     self.labelVida:setForeground(tocolor(255,255,255,255))
     self.labelVida:setBackground(tocolor(0,0,0))
     self.labelVida:setScale(scale)
@@ -97,7 +97,7 @@ button:active{
     self.labelVida:setAlignment(alignment)
     self.panelInfo:add(self.labelVida)
 
-    self.labelColete = Label("COLETE:")
+    self.labelColete = Label("COLETE: #ABABAB"..math.floor(localPlayer:getArmor()).."%")
     self.labelColete:setForeground(tocolor(255,255,255,255))
     self.labelColete:setBackground(tocolor(0,0,0))
     self.labelColete:setScale(scale)
@@ -105,15 +105,15 @@ button:active{
     self.labelColete:setAlignment(alignment)
     self.panelInfo:add(self.labelColete)
 
-    self.labelHours = Label("HORAS JOGADAS:")
+    self.labelHours = Label("HORAS JOGADAS:#ABABAB 1 minuto")
     self.labelHours:setForeground(tocolor(255,255,255,255))
     self.labelHours:setBackground(tocolor(0,0,0))
     self.labelHours:setScale(scale)
     self.labelHours:setBounds(5,self.labelColete:getY()+self.labelColete:getHeight(),self.panelInfo:getWidth(),margin)
     self.labelHours:setAlignment(alignment)
     self.panelInfo:add(self.labelHours)
-
-    self.labelLocation = Label("LOCALIZAÇÃO:")
+    showCursor(true)
+    self.labelLocation = Label("LOCALIZAÇÃO: #ABABAB"..getZoneName(localPlayer:getPosition()))
     self.labelLocation:setForeground(tocolor(255,255,255,255))
     self.labelLocation:setBackground(tocolor(0,0,0))
     self.labelLocation:setScale(scale)
@@ -183,7 +183,7 @@ button:active{
     self.panelExtern:add(self.panelEdit)
 
     self.fieldNome = TextField();
-    self.fieldNome:setPlaceholder("Digite o Login...")
+    self.fieldNome:setPlaceholder("Digite seu nome...")
 	self.fieldNome:setBounds(0,0,self.panelEdit:getWidth(),30)
     self.fieldNome:setForeground(0,0,0)
     self.fieldNome:setBackground(255,255,255,200)  
@@ -197,6 +197,13 @@ button:active{
     self.fieldIdade:setBackground(255,255,255,200)  
     self.fieldIdade:setZOrder(20)
     self.panelEdit:add(self.fieldIdade)
+
+    self.labelAcima = Label("#FF0000Acima de 18 anos")
+    self.labelAcima:setForeground(tocolor(255,255,255,200))
+    self.labelAcima:setBackground(tocolor(0,0,0))
+    self.labelAcima:setScale(1)
+    self.labelAcima:setBounds(self.fieldIdade:getX()+self.fieldIdade:getWidth()+25,self.fieldIdade:getY()+5,50,20)
+    self.panelEdit:add(self.labelAcima)
     
     self.fieldEmail = TextField();
     self.fieldEmail:setPlaceholder("email@hotmail.com")
@@ -206,7 +213,9 @@ button:active{
     self.fieldEmail:setZOrder(20)
     self.panelEdit:add(self.fieldEmail)
 
-    self.chkMasc = Checkbox("MASCULINO",false,nil)
+    self.chkGroupSexo = CheckboxGroup()
+
+    self.chkMasc = Checkbox("MASCULINO",true,self.chkGroupSexo)
 	self.chkMasc:setBounds(0,self.labelEditSexo:getY(),25,25)
 	self.chkMasc:setBackground(0,0,0)
 	self.chkMasc:setForeground(tocolor(255,255,255,255))
@@ -214,7 +223,7 @@ button:active{
 	self.chkMasc:getLabel()
     self.panelEdit:add(self.chkMasc)
     
-    self.chkFem = Checkbox("FEMININO",false,nil)
+    self.chkFem = Checkbox("FEMININO",false,self.chkGroupSexo)
 	self.chkFem:setBounds(120,self.labelEditSexo:getY(),25,25)
 	self.chkFem:setBackground(0,0,0)
 	self.chkFem:setForeground(tocolor(255,255,255,255))
@@ -222,8 +231,9 @@ button:active{
 	self.chkFem:getLabel()
     self.panelEdit:add(self.chkFem)
     
+    self.chkGroupNacio = CheckboxGroup()
     
-    self.chkBR = Checkbox("BRASILEIRA",false,nil)
+    self.chkBR = Checkbox("BRASILEIRA",true,self.chkGroupNacio)
 	self.chkBR:setBounds(0,self.labelEditNacio:getY(),25,25)
 	self.chkBR:setBackground(0,0,0)
 	self.chkBR:setForeground(tocolor(255,255,255,255))
@@ -231,7 +241,7 @@ button:active{
 	self.chkBR:getLabel()
     self.panelEdit:add(self.chkBR)
     
-    self.chkEstran = Checkbox("ESTRANGEIRA",false,nil)
+    self.chkEstran = Checkbox("ESTRANGEIRA",false,self.chkGroupNacio)
 	self.chkEstran:setBounds(120,self.labelEditNacio:getY(),25,25)
 	self.chkEstran:setBackground(0,0,0)
 	self.chkEstran:setForeground(tocolor(255,255,255,255))
@@ -244,10 +254,78 @@ button:active{
     
     self.buttonSave:setStyleClass("btnLogin")
 	self.buttonSave:addMouseListener(self)
-	self.panelExtern:add(self.buttonSave)
-
+    self.panelExtern:add(self.buttonSave)
+    
+    self:setVisible(false)
+    showCursor(false)
     return self
 end
+
+function checkAge(age)
+    age = age or 0
+    return (tonumber(age) >= 18) and true or false
+end
+
+
+function Identidade:mousePressed(e)
+	if(e:getButton() == MouseEvent.BUTTON1) then
+        if(e.source == self.buttonSave) then
+            --CHECA IDADE
+            if(ONLY_18AGE) then
+                if (type(tonumber(self.fieldIdade:getText())) ~= "number") then
+                    outputChatBox(MESSAGE_ERROR_NOT_NUMBER,255,255,255,true)
+                    return false
+                end
+                if not (checkAge(self.fieldIdade:getText())) then
+                    outputChatBox(MESSAGE_ERROR_AGE,255,255,255,true)
+                    return false
+                end
+            end
+            --CHECA EMAIL
+            if not (self.fieldEmail:getText():match("[A-Za-z0-9%.%%%+%-]+@[A-Za-z0-9%.%%%+%-]+%.%w%w%w?%w?")) then 
+                outputChatBox(MESSAGE_ERROR_EMAIL,255,255,255,true)
+                return false
+            end
+
+            ---SE TUDO ESTIVER CORRETO
+            local table = {
+                ['nameFull'] = self.fieldNome:getText(),
+                ['age'] = tonumber(self.fieldIdade:getText()),
+                ['email'] = self.fieldEmail:getText(),
+                ['sexo'] = self.chkGroupSexo:getSelectedCheckbox():getLabel(),
+                ['country'] =self.chkGroupNacio:getSelectedCheckbox():getLabel() ,
+
+            }
+            triggerServerEvent ( "trySetData", resourceRoot, localPlayer, table)
+        end
+	end
+end
+
+function Identidade.fromServerDataStatus(status,errorMessage)
+    outputChatBox("TO AQUI")
+    if(status == "OK") then
+        Identidade.getInstance():setVisible(false)
+        showCursor(false)
+        return true;
+    end
+    if(status == "ERROR") then
+        outputChatBox(errorMessage,255,255,255,true)
+    end
+end
+
+addEvent( "sendDataToClient", true )
+addEventHandler( "sendDataToClient", localPlayer, Identidade.fromServerDataStatus )
+
+function Identidade.showLoginFirst(bool)
+  
+        Identidade.getInstance():setVisible(bool)
+        showCursor(bool)
+  
+   
+end
+
+addEvent( "showLoginFirst", true )
+addEventHandler( "showLoginFirst", localPlayer, Identidade.showLoginFirst )
 
 
 addEventHandler("onClientResourceStart", resourceRoot, function()

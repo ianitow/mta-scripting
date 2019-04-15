@@ -1,40 +1,49 @@
-﻿--[[
-	@author: ianito
-	@since: 1.0
-	@website: www.iaandeveloper.com
-	@description: Account System
-]]--
-
-
-local super = Class("Account",LuaObject,function ()	
-	static.getInstance = function()
-        return LuaObject.getSingleton(static)
+﻿function Account_load()
+	for i,k in pairs(getElementsByType("player")) do
+		local playeraccount = getPlayerAccount (k)
+		if ( playeraccount ) and not isGuestAccount ( playeraccount ) then -- if the player is logged in
+			setTimer(function (player) 
+				outputChatBox("FIRST LOGIN: "..tostring(getAccountData(playeraccount,FIRST_LOGIN)),root,255,255,255,true)
+				
+				if(getAccountData(playeraccount,FIRST_LOGIN)) then
+					triggerClientEvent ( player, "showLoginFirst", player, true )
+				end
+			end,200,1,k)	 
+			
+			
+			  outputDebugString("[ianito-dev]Identidade - Players Loaded account")
+		end
 	end
-	static.configs = 
-	{
-		['nome'] = nil,
-		['idade'] = nil,
-		['email'] = nil,
-		['sexo'] = nil,
-		['nacionalidade'] = nil,
-		['armas_liberadas'] = nil
-	}
+	
+end
+addEventHandler ( "onResourceStart", resourceRoot, Account_load )
 
-end).getSuperclass()
 
---[[
-	function Account:init()
-	return:void
-	description:Default Constructor
-]]--
-function Account:init()
-	super.init(self)
-	return self
+
+
+function trySetData(player,table)
+	local playerAccount = getPlayerAccount ( player)
+	if ( playerAccount ) and not isGuestAccount ( playerAccount ) then 
+		setAccountData(playerAccount,FIRST_LOGIN,false)
+		setAccountData(playerAccount,NAME_FULL,table['nameFull'])
+		setAccountData(playerAccount,AGE,table['age'])
+		setAccountData(playerAccount,EMAIL,table['email'])
+		setAccountData(playerAccount,SEXO,table['sexo'])
+		setAccountData(playerAccount,COUNTRY,table['country'])
+		triggerClientEvent ( player, "sendDataToClient", player, "OK" )
+		outputChatBox("#FF0000■▼#FFFFFFIdentidade#FF0000■▼  ",player,255,255,255,true)
+		outputChatBox("#FFFFFFNome:#FF0000 "..tostring(table['nameFull']),player,255,255,255,true)
+		outputChatBox("#FFFFFFIdade:#FF0000 "..tostring(table['age']),player,255,255,255,true)
+		outputChatBox("#FFFFFFEmail:#FF0000 "..tostring(table['email']),player,255,255,255,true)
+		outputChatBox("#FFFFFFSexo:#FF0000 "..tostring(table['sexo']),player,255,255,255,true)
+		outputChatBox("#FFFFFFPaís:#FF0000 "..tostring(table['country']),player,255,255,255,true)
+		outputChatBox("#FFFFFF------------------------- ",player,255,255,255,true)
+		return true
+	end
+	triggerClientEvent ( player, "sendDataToClient", player, "ERROR","#FF0000[SERVER]:#FFFFFErro inesperado." )
 end
 
-function Account:loadData(account,player)
-	if(isGuestAccount(account)) then
-		return false
-	end
-end
 
+
+addEvent( "trySetData", true )
+addEventHandler( "trySetData", resourceRoot, trySetData) 

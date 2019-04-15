@@ -1,0 +1,1 @@
+TIMER_VARIABLE = "global.timerOnline"
