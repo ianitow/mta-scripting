@@ -37,8 +37,9 @@ button:active{
 ]])
 
     self.panelExtern = Panel()
-    self.panelExtern:setBounds(Graphics.getInsets(0,0,self.screenX/6.5,0))
-    self.panelExtern:setSize(self.panelExtern:getWidth(),480)
+   
+    self.panelExtern:setBounds(Graphics.getInsets(0,0,247,0))
+    self.panelExtern:setSize(425,480)
     self.panelExtern:setLocation(self.screenX/3,self.screenY/4.5)
     self.panelExtern:setBackground(0,0,0,150)
 	self.panelExtern:setBorder(LineBorder(tocolor(255,255,255),2))
@@ -69,10 +70,9 @@ button:active{
 
     
     self.panelInfo = Panel()
-    self.panelInfo:setBounds(Graphics.getInsets(0,0,140,0))
-    self.panelInfo:setSize(self.panelInfo:getWidth(),150)
-    self.panelInfo:setLocation((self.avatar:getWidth()+self.avatar:getX()) + 20,self.panelTitle:getY()+self.panelTitle:getHeight()+20)
-    --self.panelInfo:setBorder(LineBorder(tocolor(255,255,0),2))
+    self.panelInfo:setSize(220,150)
+    self.panelInfo:setLocation((self.avatar:getWidth()+self.avatar:getX()) + 10,self.panelTitle:getY()+self.panelTitle:getHeight()+20)
+    self.panelInfo:setBorder(LineBorder(tocolor(255,255,0),2))
     self.panelInfo:setBackground(tocolor(0,0,0,0))
     self.panelExtern:add(self.panelInfo)
     

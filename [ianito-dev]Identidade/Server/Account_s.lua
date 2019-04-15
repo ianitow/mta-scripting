@@ -3,14 +3,10 @@
 		local playeraccount = getPlayerAccount (k)
 		if ( playeraccount ) and not isGuestAccount ( playeraccount ) then -- if the player is logged in
 			setTimer(function (player) 
-				outputChatBox("FIRST LOGIN: "..tostring(getAccountData(playeraccount,FIRST_LOGIN)),root,255,255,255,true)
-				
-				if(getAccountData(playeraccount,FIRST_LOGIN)) then
+				if not (getAccountData(playeraccount,FIRST_LOGIN)) then
 					triggerClientEvent ( player, "showLoginFirst", player, true )
 				end
-			end,200,1,k)	 
-			
-			
+			end,1000,1,k)	 	
 			  outputDebugString("[ianito-dev]Identidade - Players Loaded account")
 		end
 	end
@@ -19,12 +15,22 @@ end
 addEventHandler ( "onResourceStart", resourceRoot, Account_load )
 
 
+addEventHandler("onPlayerLogin", root,
+  function(previous,current)
+    setTimer(function (player) 
+		if not ( getAccountData(current,FIRST_LOGIN)) then
+			triggerClientEvent ( player, "showLoginFirst", player, true )
+		end
+	end,200,1,source)	
+  end
+)
+
 
 
 function trySetData(player,table)
 	local playerAccount = getPlayerAccount ( player)
 	if ( playerAccount ) and not isGuestAccount ( playerAccount ) then 
-		setAccountData(playerAccount,FIRST_LOGIN,false)
+		setAccountData(playerAccount,FIRST_LOGIN,true)
 		setAccountData(playerAccount,NAME_FULL,table['nameFull'])
 		setAccountData(playerAccount,AGE,table['age'])
 		setAccountData(playerAccount,EMAIL,table['email'])
