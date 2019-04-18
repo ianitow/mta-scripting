@@ -1,0 +1,22 @@
+<meta>
+
+    <min_mta_version server="1.5.2-9.07903" client="1.5.2-9.07903" />
+	<info author="ianito" description="System - SAMU" version="1.0" type="script" />
+	<oop>true</oop>
+        <include resource="notification" />
+        <file src="Gfx/heart.png" />
+        <file src="Gfx/shock.wav" />
+        <file src="Gfx/beat.mp3" />
+	    <script src="Shared/config.lua" type="shared" /> -
+		<script src="Shared/core.luac" type="shared" /> -
+		<script src="Shared/framework.lua" type="client" /> -
+		
+		<script src="Server/init_s.lua" type="server" /> 
+        <script src="Client/Samu_c.lua" type="client" /> 
+         <script src="Client/Samu.lua" type="client" /> 
+
+
+
+
+		
+</meta>

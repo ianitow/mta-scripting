@@ -72,7 +72,7 @@ button:active{
     self.panelInfo = Panel()
     self.panelInfo:setSize(220,150)
     self.panelInfo:setLocation((self.avatar:getWidth()+self.avatar:getX()) + 10,self.panelTitle:getY()+self.panelTitle:getHeight()+20)
-    self.panelInfo:setBorder(LineBorder(tocolor(255,255,0),2))
+    --self.panelInfo:setBorder(LineBorder(tocolor(255,255,0),2))
     self.panelInfo:setBackground(tocolor(0,0,0,0))
     self.panelExtern:add(self.panelInfo)
     
