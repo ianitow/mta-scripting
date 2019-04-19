@@ -1,0 +1,19 @@
+<meta>
+
+    <min_mta_version server="1.5.2-9.07903" client="1.5.2-9.07903" />
+	<info author="MainGames Developers" description="Account / Identidade" version="1.0" type="script" />
+	<oop>true</oop>
+	
+		<file src="Gfx/police-icon.png"/>
+			<script src="Shared/config.lua" type="shared" 	/>  
+		<script src="Shared/core.luac" type="shared" /> 
+		<script src="Shared/framework.lua" type="shared" />
+	
+	
+		<script src="Client/PainelPM.lua" type="client" 	/> 
+		<script src="Client/TimerJail.lua" type="client" 	/> 
+	
+		<script src="Server/Ped_s.lua" type="server" 	/> 
+	<script src="Client/Ped_c.lua" type="client" 	/> 
+	
+</meta>
