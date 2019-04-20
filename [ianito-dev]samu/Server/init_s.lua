@@ -3,6 +3,7 @@ function wastedWhenAnimON()
          setPedAnimation(source,nil)
           toggleAllControls(source,true,true,true) 
           removeWhenDeath(source)
+          destroyBlipSAMU(source:getData(DATA_TO_COL))
           
 end
 
