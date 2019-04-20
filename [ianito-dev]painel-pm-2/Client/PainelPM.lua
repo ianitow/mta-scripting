@@ -201,36 +201,69 @@ button:active{
     
     self:setVisible(false)
     self.onPlayerPressKey = function (button,press)
+         
         for i,k in pairs(getElementsByType("colshape")) do
             if(isElementWithinColShape(localPlayer,k)) then
                 if(getElementData(k,DATA_IS_COL_SHOW)) then
                     if(button == BUTTON_OPEN)then
-                        if(isChatBoxInputActive ()) then return end
+                      
                         if(press) then
+                            
+                            local selected = getElementData(k,DATA_PLAYER_SELECTED)
+                            self:updateInfos(selected)
                             if not self:isVisible() then
+                         
                                 self:setVisible(true)
                                 showCursor(true)
                                 
-                            else
-                               self:setVisible(false)
-                                showCursor(false)
+                        
                             end
+                            
                         end
                     end
                 end
             end
         
-        end
+         end
         
        
     end
-    
-    addEventHandler( "onClientKey", root, self.onPlayerPressKey) 
+    addEventHandler("onClientKey", root, self.onPlayerPressKey)
     return self
 end
+
+function PainelPM:updateInfos(selected)
+    local health = getElementHealth(selected)
+    local armor = getPlayerArmor(selected)
+    local money = getPlayerMoney(selected)
+    local isHandCuff =  getElementData(selected,DATA_IS_PLAYER_HANDCUFF)
+    if(isHandCuff) then
+        self.buttonAlgemar:setText("DESALGEMAR")
+    else
+        self.buttonAlgemar:setText("ALGEMAR")
+    end
+    self.labelHealth:setText("Vida: #FF0000"..tostring(health).."%")
+    self.labelNameSuspect:setText("Nome: #FF0000"..tostring(selected.name))
+    self.labelArmor:setText("Colete: #DCDCDC"..tostring(armor).."%")
+    self.labelMoney:setText("Dinheiro: #00FF00R$"..tostring(money))
+    
+  
+end
+
+
+
+
+
+
+
+
+
+
+
 local pedActual = nil 
-function eventOnEnter()
-    dxDrawTextOnElement(pedActual,"Pressione N para abrir o painel",1.2,20,255,255,255,255,1.3,"sans")
+local fisrt = true
+ function eventOnEnter()
+     dxDrawTextOnElement(pedActual,"Pressione N para abrir o painel",1.2,20,255,255,255,255,1.3,"sans")
 end
 
 
@@ -240,9 +273,12 @@ end
 function PainelPM.onPoliceEnterCol(shape,matchingDimension)
    if(matchingDimension) then
         if(getElementData(shape,DATA_IS_COL_SHOW)) then
-            pedActual = shape
+           if not first then
             addEventHandler("onClientRender",root,eventOnEnter)
+            end
+            pedActual = shape
             setElementData(source,DATA_PLAYER_SELECTED,getElementData(shape,DATA_PLAYER_SELECTED))
+            first = false
         end
     end
 end
@@ -255,7 +291,6 @@ function PainelPM.onPoliceLeaveCol(shape,matchingDimension)
      end
  end
 
-showCursor(false)
 
 addEventHandler("onClientResourceStart", resourceRoot, function()
     Toolkit.getInstance():add(PainelPM.getInstance())
@@ -263,30 +298,41 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
     for i,k in pairs(getElementsByType("player"))do
         if not (k == localPlayer) then
             local x,y,z = getElementPosition(k)
-            local col = createColSphere(x,y,z,1.5)
+            local col = createColSphere(x,y,z,1)
             attachElements(col,k)
             setElementData(k,DATA_COL_TO_SHOW,col)
             setElementData(col,DATA_PLAYER_SELECTED,k)
             setElementData(col,DATA_IS_COL_SHOW,true)
             addEventHandler("onClientElementColShapeHit",root,PainelPM.onPoliceEnterCol)
             addEventHandler("onClientElementColShapeLeave",root,PainelPM.onPoliceLeaveCol)
-            outputChatBox("EVEND ADD")
         end
        
     end
 end)
 
+
+function showNotification(message)
+    exports['notification']:addNotification(message, "info", 5000, "top")
+end
+addEvent("showNotificationOnTop",true)
+addEventHandler("showNotificationOnTop",root,showNotification)
+
+
+
+
+
 function PainelPM:mousePressed(e)
 	if(e:getButton() == MouseEvent.BUTTON1) then
         if(e.source == self.buttonAlgemar) then
             local p = getElementData(localPlayer,DATA_PLAYER_SELECTED)
-            triggerServerEvent ( "tryJailPlayer", resourceRoot,p)
+            local s = getElementData(p,DATA_IS_PLAYER_HANDCUFF)
+    
+             triggerServerEvent ( "tryJailPlayer", resourceRoot,p,(not s))
             showCursor(false)
             self:setVisible(false)
         end
 	end
 end
 
-    -- Since mouse_wheel_up and mouse_wheel_down cant return a release, we dont have to check the press.
- 
+    
 

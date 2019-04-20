@@ -13,7 +13,7 @@ JAIL_OUT_X = 1552.41968
 JAIL_OUT_Y = -1675.49231
 JAIL_OUT_Z = 16.19531
 
-
+--GIFT GIVE
 
 
 
@@ -29,8 +29,18 @@ DATA_PLAYER_SELECTED = '[ianito-dev]getPlayerSelected'
 
 
 
+
+DATA_IS_PLAYER_HANDCUFF = '[ianito-dev]PM.handcuff'
+
+
+
+
+
 MESSAGE_ERROR_NOT_WANTED = "#FF0000[SERVER]:#FFFFFF Player não está sendo procurado!"
 MESSAGE_ERROR_NOT_POLICE = "#FF0000[SERVER]:#FFFFFF Afaste-se! Você não é um policial."
 MESSAGE_NOT_INSIDE_MARKER = "#FF0000[SERVER]:#FFFFFF Você não está dentro do marcador."
 MESSAGE_NOT_PLAYERS_JAILED = "#FF0000[SERVER]:#FFFFFF Você não tem presos te seguindo."
 
+    MESSAGE_JAILED_PLAYER = "#FF0000[SERVER]:#FFFFFF Você está algemado."
+    MESSAGE_UNJAILED_PLAYER = "#FF0000[SERVER]:#FFFFFF Você foi solto."
+    

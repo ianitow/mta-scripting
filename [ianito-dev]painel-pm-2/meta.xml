@@ -3,7 +3,7 @@
     <min_mta_version server="1.5.2-9.07903" client="1.5.2-9.07903" />
 	<info author="MainGames Developers" description="Account / Identidade" version="1.0" type="script" />
 	<oop>true</oop>
-	
+		<include resource="notification" />
 		<file src="Gfx/police-icon.png"/>
 			<script src="Shared/config.lua" type="shared" 	/>  
 		<script src="Shared/core.luac" type="shared" /> 

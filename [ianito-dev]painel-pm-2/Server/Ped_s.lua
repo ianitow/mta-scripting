@@ -1,6 +1,40 @@
 MARKER = createMarker(1579.65210, -1635.42102, 12.56098,"cylinder",2.0,255,0,0)
 
 
+function algemarPlayer(player,state)
+    if state then
+        setElementFrozen(player,true)
+        toggleAllControls(player,false,true,false)
+        setPedAnimation(player,"kissing","gift_give",-1,true,false,false,true)
+     
+        setTimer(function(ped) 
+        setPedAnimationProgress(ped,"gift_give",0.1)
+        end, 50, 0,player)
+    else
+        setElementFrozen(player,false)
+        toggleAllControls(player,true,true,true)
+        setPedAnimation(player,nil)
+    end
+end
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function addPed(thePlayer,cmd) 
@@ -81,10 +115,6 @@ function jailPlayer(thePlayer,marker)
               
                 outputChatBox("#FF0000[POLICE]:#FFFFFFVocê foi preso pelo "..getPlayerName(thePlayer),k,255,255,255,true)
                 outputChatBox("#FF0000[POLICE]:#FFFFFFVocê prendeu:  "..getPlayerName(k),thePlayer,255,255,255,true)
-                
-
-
-              
     
                 --CANCELA EVENTO
                 triggerClientEvent ( "followPlayer", ped, k, false )
@@ -193,17 +223,48 @@ addEventHandler("onResourceStop",resourceRoot,function()
         detachElements(thePlayer)
         destroyElement(getElementData(thePlayer,DATA_PED_ELEMENT))
         toggleAllControls(thePlayer,true,true,true)
-        setElementData(thePlayer,DATA_IS_PLAYER_JAIL,false)
+
+
+
+
+        setElementData(thePlayer,DATA_IS_PLAYER_JAIL,nil)
+        setElementData(thePlayer,DATA_PLAYERS_JAILED,nil)
+        setElementData(thePlayer,DATA_PED_ELEMENT,nil)
+
+        setElementData(thePlayer,DATA_IS_PLAYER_JAIL,nil)
+        setElementData(thePlayer,DATA_PLAYERS_JAILED,nil)
+        setElementData(thePlayer,DATA_PED_ELEMENT,nil)
+
         setElementData(thePlayer,DATA_TIMER_LEFT,nil)
-        setElementData(thePlayer,DATA_PLAYERS_JAIL,nil)
+        setElementData(thePlayer,DATA_COL_TO_SHOW,nil)
+        setElementData(thePlayer,DATA_IS_COL_SHOW,nil)
+
+        setElementData(thePlayer,DATA_PLAYER_SELECTED ,nil)
+
+        setElementData(selected,DATA_IS_PLAYER_HANDCUFF,nil)
     end
 end)
+ 
+ 
+ 
+
+
+ 
 
 
 ---EVENTS
 
-function tryJailPlayer (player)
-    handcuffPlayer(player,client)
+function tryJailPlayer (player,state)
+ algemarPlayer(player,state)
+ if(state) then
+    setElementData(player,DATA_IS_PLAYER_HANDCUFF,true)
+    triggerClientEvent(player,"showNotificationOnTop",player,MESSAGE_JAILED_PLAYER)
+
+ else
+    setElementData(player,DATA_IS_PLAYER_HANDCUFF,false)
+    triggerClientEvent(player,"showNotificationOnTop",player,MESSAGE_UNJAILED_PLAYER)
+
+ end
 end
 addEvent( "tryJailPlayer", true )
 addEventHandler( "tryJailPlayer", resourceRoot, tryJailPlayer )

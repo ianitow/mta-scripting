@@ -55,17 +55,3 @@ function destroyPNGHeart ()
  addEvent( "destroyPNGHeart", true )
  addEventHandler( "destroyPNGHeart", localPlayer, destroyPNGHeart )
  
-
-
-
-
-addCommandHandler("clear",function()
-    triggerServerEvent ( "startAnimSamu", resourceRoot,false )
-    localPlayer:setData(DATA_TO_ANIM,false)  
-end)
-
-addCommandHandler("anim",function()
-    triggerServerEvent ( "startAnimSamu", resourceRoot,true )
-end)
-
-

@@ -19,13 +19,18 @@ function startAnimSamu ( config)
     
     
     if(config) then
-        setPedAnimation(client,"crack","crckdeth2",-1,true,false,false,false)
-        
-        toggleAllControls(client,false,true,false)
         local x,y,z = getElementPosition(client)
+        if(isPedInVehicle(client)) then
+            removePedFromVehicle(client)
+            setElementPosition(x+2,y+2,z+4)
+        end
+        setPedAnimation(client,"crack","crckdeth2",-1,true,false,false,false)
+        toggleAllControls(client,false,true,false)
+        
         local colshape = createColSphere(x,y,z,2) 
         client:setData(DATA_TO_COL,colshape)
         colshape:setData(DATA_COL_PLAYER,client)
+        attachElements(colshape,client)
         createBlipToSAMU(colshape)
         addEventHandler("onColShapeHit",colshape,onElementEnterInColShapeSamu)
         addEventHandler("onColShapeLeave",colshape,onElementExitInColShapeSamu)
@@ -144,3 +149,19 @@ addCommandHandler("curar",function (player,cmd)
     startJobRestore(player,otherPlayer)
   
 end)
+
+
+
+
+addEventHandler("onResourceStop",resourceRoot,function()
+    for i,thePlayer in pairs(getElementsByType("player"))do
+
+        setElementData(thePlayer,DATA_TO_ANIM,nil)
+        setElementData(thePlayer,DATA_TO_COL,nil)
+        setElementData(thePlayer,DATA_COL_PLAYER,nil)
+
+        setElementData(thePlayer,DATA_BLIP,nil)
+       
+    end
+end)
+ 
