@@ -27,7 +27,7 @@ DATA_COL_TO_SHOW = '[ianito-dev]PM.dataColShow'
 DATA_IS_COL_SHOW = '[ianito-dev]PM.isMyCol'
 DATA_PLAYER_SELECTED = '[ianito-dev]getPlayerSelected'
 
-
+DATA_IS_ALLOWED_TO_USE =  '[ianito-dev]allowedToUse'
 
 
 DATA_IS_PLAYER_HANDCUFF = '[ianito-dev]PM.handcuff'

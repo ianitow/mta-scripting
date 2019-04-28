@@ -37,6 +37,8 @@ button:active{
   
 ]])
 
+
+
     self.panelExtern = Panel()
     self.panelExtern:setBounds(Graphics.getInsets(0,0,247,0))
     self.panelExtern:setSize(425,480)
@@ -59,7 +61,7 @@ button:active{
     self.labelTitle:setBounds(0,0,self.panelTitle:getWidth(),self.panelTitle:getHeight())
     self.labelTitle:setAlignment(Label.CENTER)
     self.panelTitle:add(self.labelTitle)
-    self:setVisible(true)
+  
 
     self.iconPolice = Image()
 	self.iconPolice:setSource("Gfx/police-icon.png")
@@ -168,7 +170,7 @@ button:active{
 	--self.panelCommands:setBorder(LineBorder(tocolor(0,0,255),2))
     self.panelExtern:add(self.panelCommands)
 
-    self.buttonAlgemar = Button("ALGEMAR")
+    self.buttonAlgemar = Button("")
     self.buttonAlgemar:setBounds(5,5,self.panelCommands:getWidth()-10,40)
     self.buttonAlgemar:setStyleClass("btnLogin")
 	self.buttonAlgemar:addMouseListener(self)
@@ -199,29 +201,99 @@ button:active{
     self.panelCommands:add(self.buttonTakeWeapon)
 
     
-    self:setVisible(false)
+    self.panelSetNivel = Panel()
+    self.panelSetNivel:setBounds(855,550,200,100)
+    self.panelSetNivel:setBackground(0,0,0,150)
+    self.panelSetNivel:setBorder(LineBorder(tocolor(0,0,0),2))
+    
+    self.panelSetNivelTitle = Panel()
+    self.panelSetNivelTitle:setBounds(self.panelSetNivel:getX(),self.panelSetNivel:getY()-20,self.panelSetNivel:getWidth(),20)
+    self.panelSetNivelTitle:setBackground(0,0,0,255)
+    self.panelSetNivelTitle:setBorder(LineBorder(tocolor(0,0,0),2))
+
+    self.labelTitleNivel = Label("Setar Nível")
+    self.labelTitleNivel:setForeground(tocolor(255,255,255,255))
+    self.labelTitleNivel:setBackground(tocolor(255,255,255,1))
+    self.labelTitleNivel:setScale(1)
+    self.labelTitleNivel:setBounds(0,0,self.panelSetNivelTitle:getWidth(),self.panelSetNivelTitle:getHeight())
+    self.labelTitleNivel:setAlignment(Label.CENTER)
+    self.panelSetNivelTitle:add(self.labelTitleNivel)
+
+
+    self.labelInformeNivel = Label("Informe o nível:")
+    self.labelInformeNivel:setForeground(tocolor(255,255,255,255))
+    self.labelInformeNivel:setBackground(tocolor(0,0,0,1))
+    self.labelInformeNivel:setScale(1)
+    self.labelInformeNivel:setBounds(5,10,self.panelSetNivelTitle:getWidth(),self.panelSetNivelTitle:getHeight())
+    self.labelInformeNivel:setAlignment(Label.CENTER)
+    self.panelSetNivel:add(self.labelInformeNivel)
+
+    self.buttonSetNivel = Button("SETAR")
+    self.buttonSetNivel:setBounds(self.panelSetNivel:getWidth()-150,self.panelSetNivel:getHeight()-35,100,30)
+    self.buttonSetNivel:setStyleClass("btnLogin")
+	self.buttonSetNivel:addMouseListener(self)
+    self.panelSetNivel:add(self.buttonSetNivel)
+
+    self.fieldRegister = TextField();
+    self.fieldRegister:setPlaceholder("Quantidade...")
+    self.fieldRegister:setForeground(0,0,0)
+    self.fieldRegister:setBackground(255,255,255,200)  
+    self.fieldRegister:setZOrder(2)
+    self.fieldRegister:setBounds(self.buttonSetNivel:getX(),self.buttonSetNivel:getY()-35,100,30)
+    self.panelSetNivel:add(self.fieldRegister)
+    self.visible = true
+
+
+
+    self:add(self.panelSetNivelTitle)
+    self:add(self.panelSetNivel)
+    self.panelSetNivel:setVisible(false)
+    self.panelSetNivelTitle:setVisible(false)
+
     self.onPlayerPressKey = function (button,press)
-         
+        if(isChatBoxInputActive()) then
+            return 
+        end
+       
+    
         for i,k in pairs(getElementsByType("colshape")) do
+
+            if(button == BUTTON_OPEN)then
+                if (press) then
+                    if self:isVisible() then
+                        self:setVisible(false)
+                        showCursor(false)
+                        return
+                    end
+                end
+            end
             if(isElementWithinColShape(localPlayer,k)) then
                 if(getElementData(k,DATA_IS_COL_SHOW)) then
                     if(button == BUTTON_OPEN)then
-                      
                         if(press) then
-                            
                             local selected = getElementData(k,DATA_PLAYER_SELECTED)
-                            self:updateInfos(selected)
-                            if not self:isVisible() then
-                         
-                                self:setVisible(true)
-                                showCursor(true)
-                                
-                        
-                            end
                             
+                            
+                                if  getElementData(localPlayer,DATA_IS_ALLOWED_TO_USE) then
+                                    self:updateInfos(selected)
+                                    self:setVisible(true)
+                                    showCursor(true)
+                                    return                     
+                                end
                         end
                     end
+
+                    
                 end
+            else
+                if(button == BUTTON_OPEN)then
+                    if(press) then
+                    if(self:isVisible()) then
+                        self:setVisible(false)
+                        showCursor(false)      
+                    end
+                 end
+                 end
             end
         
          end
@@ -229,7 +301,9 @@ button:active{
        
     end
     addEventHandler("onClientKey", root, self.onPlayerPressKey)
+    self:setVisible(false)
     return self
+
 end
 
 function PainelPM:updateInfos(selected)
@@ -238,9 +312,9 @@ function PainelPM:updateInfos(selected)
     local money = getPlayerMoney(selected)
     local isHandCuff =  getElementData(selected,DATA_IS_PLAYER_HANDCUFF)
     if(isHandCuff) then
-        self.buttonAlgemar:setText("DESALGEMAR")
+        self.buttonAlgemar:setLabel("DESALGEMAR")
     else
-        self.buttonAlgemar:setText("ALGEMAR")
+        self.buttonAlgemar:setLabel("ALGEMAR")
     end
     self.labelHealth:setText("Vida: #FF0000"..tostring(health).."%")
     self.labelNameSuspect:setText("Nome: #FF0000"..tostring(selected.name))
@@ -253,41 +327,40 @@ end
 
 
 
-
-
-
-
-
-
-
 local pedActual = nil 
 local fisrt = true
- function eventOnEnter()
-     dxDrawTextOnElement(pedActual,"Pressione N para abrir o painel",1.2,20,255,255,255,255,1.3,"sans")
+  function eventOnEnter()
+    if  getElementData(localPlayer,DATA_IS_ALLOWED_TO_USE) then 
+      dxDrawTextOnElement(pedActual,"Pressione N para abrir o painel",1.2,20,255,255,255,255,1.3,"sans")
+    end
 end
-
 
 
 
 
 function PainelPM.onPoliceEnterCol(shape,matchingDimension)
    if(matchingDimension) then
+      if source == localPlayer then
         if(getElementData(shape,DATA_IS_COL_SHOW)) then
-           if not first then
-            addEventHandler("onClientRender",root,eventOnEnter)
-            end
-            pedActual = shape
-            setElementData(source,DATA_PLAYER_SELECTED,getElementData(shape,DATA_PLAYER_SELECTED))
-            first = false
-        end
+            if not first then
+                 addEventHandler("onClientRender",root,eventOnEnter)
+             end
+             pedActual = shape
+             setElementData(source,DATA_PLAYER_SELECTED,getElementData(shape,DATA_PLAYER_SELECTED))
+             first = false
+         end  
+    end
     end
 end
 function PainelPM.onPoliceLeaveCol(shape,matchingDimension)
     if(matchingDimension) then
-         if(getElementData(shape,DATA_IS_COL_SHOW)) then
-            removeEventHandler("onClientRender",root,eventOnEnter)
-            setElementData(source,DATA_PLAYER_SELECTED,nil)
-         end
+        if source == localPlayer then
+            if(getElementData(shape,DATA_IS_COL_SHOW)) then
+                removeEventHandler("onClientRender",root,eventOnEnter)
+                setElementData(source,DATA_PLAYER_SELECTED,nil)
+                pedActual = nil
+             end
+        end
      end
  end
 
@@ -326,10 +399,50 @@ function PainelPM:mousePressed(e)
         if(e.source == self.buttonAlgemar) then
             local p = getElementData(localPlayer,DATA_PLAYER_SELECTED)
             local s = getElementData(p,DATA_IS_PLAYER_HANDCUFF)
-    
-             triggerServerEvent ( "tryJailPlayer", resourceRoot,p,(not s))
+            triggerServerEvent ( "tryJailPlayer", resourceRoot,p,(not s))
             showCursor(false)
             self:setVisible(false)
+        elseif(e.source == self.buttonRevistar) then
+            local p = getElementData(localPlayer,DATA_PLAYER_SELECTED)
+            triggerServerEvent ( "tryRevistarPlayer", resourceRoot,p)
+            showCursor(false)
+            self:setVisible(false)
+        elseif(e.source == self.buttonTakeWeapon) then
+            local p = getElementData(localPlayer,DATA_PLAYER_SELECTED)
+            triggerServerEvent ( "tryTakeAllWeapons", resourceRoot,p)
+            showCursor(false)
+            self:setVisible(false)
+        elseif(e.source == self.buttonPorte) then
+            local p = getElementData(localPlayer,DATA_PLAYER_SELECTED)
+           
+            if(self.panelSetNivel:isVisible() ) then
+               
+                self.panelSetNivel:setVisible(false)
+                self.panelSetNivelTitle:setVisible(false)
+            else
+
+                self.panelSetNivel:setVisible(true)
+                self.panelSetNivelTitle:setVisible(true)
+                self.fieldRegister:setText("");
+            end
+        elseif(e.source == self.buttonSetNivel) then
+            local number = tonumber(self.fieldRegister:getText())
+            local p = getElementData(localPlayer,DATA_PLAYER_SELECTED)
+       
+            if(p) then
+           
+            if(type(number) == "number") then
+                if(number >= 0 and number <=6) then
+                    triggerServerEvent ( "trySetNivel", resourceRoot,p,number)
+                else
+                    outputChatBox("#FF0000[SERVER]#FF000Informe um número de 0 até 6.")
+                end
+            else
+                outputChatBox("#FF0000[SERVER]#FF000Informe um número valido.")
+            end
+
+           
+            end
         end
 	end
 end

@@ -1,0 +1,10 @@
+<meta>
+	<info name="Notification script" author="denny199" version="1.0" type="misc" />
+	
+	<!-- CLIENTSIDE SCRIPTS -->
+	<script src="notifications_client.lua" type="client" />
+	<file src="notification.png" />
+	<file src="plonk.mp3" />
+
+	<export function="addNotification" type="client" />
+</meta>

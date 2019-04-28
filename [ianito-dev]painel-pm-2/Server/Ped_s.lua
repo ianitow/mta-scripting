@@ -36,14 +36,6 @@ end
 
 
 
-
-function addPed(thePlayer,cmd) 
-    setPlayerWantedLevel(thePlayer,1)
-end 
-addCommandHandler ( "wd", addPed ) 
-
-
-
 function handcuffPlayer(victim,owner)
     if not victim or not owner then return end
     local x,y,z = getElementPosition(victim)
@@ -189,16 +181,16 @@ function mainTimer()
 end
 mainTimer()
 
-addCommandHandler("clear",function (thePlayer,cmd)
-    setElementAlpha(thePlayer,255)
-    setElementCollisionsEnabled(thePlayer,true)
-    detachElements(thePlayer)
-    destroyElement(getElementData(thePlayer,DATA_PED_ELEMENT))
-    toggleAllControls(thePlayer,true,true,true)
-    setElementData(thePlayer,DATA_IS_PLAYER_JAIL,false)
-    setElementData(thePlayer,DATA_TIMER_LEFT,nil)
-    setElementData(thePlayer,DATA_PLAYERS_JAIL,nil)
-end)
+-- addCommandHandler("clear",function (thePlayer,cmd)
+--     setElementAlpha(thePlayer,255)
+--     setElementCollisionsEnabled(thePlayer,true)
+--     detachElements(thePlayer)
+--     destroyElement(getElementData(thePlayer,DATA_PED_ELEMENT))
+--     toggleAllControls(thePlayer,true,true,true)
+--     setElementData(thePlayer,DATA_IS_PLAYER_JAIL,false)
+--     setElementData(thePlayer,DATA_TIMER_LEFT,nil)
+--     setElementData(thePlayer,DATA_PLAYERS_JAIL,nil)
+-- end)
 
 
 addEventHandler("onPlayerQuit",resourceRoot,function()
@@ -221,7 +213,10 @@ addEventHandler("onResourceStop",resourceRoot,function()
         setElementAlpha(thePlayer,255)
         setElementCollisionsEnabled(thePlayer,true)
         detachElements(thePlayer)
+        if(getElementData(thePlayer,DATA_PED_ELEMENT)) then
+            
         destroyElement(getElementData(thePlayer,DATA_PED_ELEMENT))
+        end
         toggleAllControls(thePlayer,true,true,true)
 
 
@@ -241,7 +236,7 @@ addEventHandler("onResourceStop",resourceRoot,function()
 
         setElementData(thePlayer,DATA_PLAYER_SELECTED ,nil)
 
-        setElementData(selected,DATA_IS_PLAYER_HANDCUFF,nil)
+        setElementData(thePlayer,DATA_IS_PLAYER_HANDCUFF,nil)
     end
 end)
  
@@ -253,6 +248,30 @@ end)
 
 
 ---EVENTS
+function isPedContainWeapon(thePed)
+    local weapons = 0
+    for slot=1, 12 do
+        local weapon = getPedWeapon(thePed, slot)
+        local ammo = getPedTotalAmmo(thePed, slot)
+        if (weapon > 0) and (ammo > 0) then
+          
+            weapons = 1
+        end
+    end
+    return weapons
+end
+
+function getAllPedWeapon(thePed)
+    local weapons = { }
+    for slot=1, 12 do
+        local weapon = getPedWeapon(thePed, slot)
+        local ammo = getPedTotalAmmo(thePed, slot)
+        if (weapon > 0) and (ammo > 0) then
+            weapons[weapon] = ammo
+        end
+    end
+    return weapons
+end
 
 function tryJailPlayer (player,state)
  algemarPlayer(player,state)
@@ -268,3 +287,55 @@ function tryJailPlayer (player,state)
 end
 addEvent( "tryJailPlayer", true )
 addEventHandler( "tryJailPlayer", resourceRoot, tryJailPlayer )
+
+
+
+
+function tryTakeAllWeapons (player)
+   if(player) then
+    if(isPedContainWeapon(player) > 0) then
+        triggerClientEvent(player,"showNotificationOnTop",player,"#FF0000[POLICE]:#FFFFFFVocê teve as armas confiscadas pelo: #FF0000"..client.name)
+        triggerClientEvent(client,"showNotificationOnTop",player,"#FF0000[POLICE]:#FFFFFFVocê retirou todas as armas do player: #FF0000"..player.name)
+        takeAllWeapons(player)
+    else
+            triggerClientEvent(player,"showNotificationOnTop",player,"#FF0000[POLICE]:#FFFFFF: #FF0000"..client.name.."#FFFFFF te revistou, mas você não tem nada!")
+            triggerClientEvent(client,"showNotificationOnTop",player,"#FF0000[POLICE]:#FFFFFFNada encontrado com o player: #FF0000"..player.name)        
+    end
+        
+    end
+   end
+   addEvent( "tryTakeAllWeapons", true )
+   addEventHandler( "tryTakeAllWeapons", resourceRoot, tryTakeAllWeapons )
+
+
+   function trySetNivel (player,nivel)
+    if(player) then
+   
+         triggerClientEvent(player,"showNotificationOnTop",player,"#FF0000[POLICE]:#FFFFFFVocê está sendo procurado, nivel: #FF0000"..tostring(nivel),player)
+         triggerClientEvent(client,"showNotificationOnTop",player,"#FF0000[POLICE]:#FFFFFFVocê colocou o player: #FF0000"..player.name.. "#FFFFFF sob procura.",client)
+        setPlayerWantedLevel(player,tonumber(nivel))
+    end
+end
+addEvent( "trySetNivel", true )
+addEventHandler( "trySetNivel", resourceRoot, trySetNivel )
+
+ 
+   
+function tryRevistarPlayer (extern)
+    setPedAnimation(client,"police","plc_drgbst_01",3000,false,false,false,false,1000)
+    setTimer(function (player,police) 
+        if(isPedContainWeapon(player) > 0) then
+            triggerClientEvent(police,"showNotificationOnTop",player,"#FF0000[POLICE]:#FFFFFFForam encontradas as seguintes armas:")
+            for i,k in pairs(getAllPedWeapon(player)) do
+                triggerClientEvent(police,"showNotificationOnTop",player,"#FFFFFF"..tostring(getWeaponNameFromID(i)))
+            end
+    else
+        triggerClientEvent(police,"showNotificationOnTop",player,"#FF0000[POLICE]:#FFFFFFNão foram encontradas armas com o player:#FF0000 "..player.name)
+           
+    end
+    end,3000,1,extern,client)
+    
+  
+end
+   addEvent( "tryRevistarPlayer", true )
+   addEventHandler( "tryRevistarPlayer", resourceRoot, tryRevistarPlayer) 

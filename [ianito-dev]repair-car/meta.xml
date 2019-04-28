@@ -1,0 +1,11 @@
+<meta>
+    <info author="ianito" version="1.0" name="Repair Car - System" type="script" />
+   <file src="gfx/repair.mp3"/>
+    <script src="config.lua" />
+
+    <script src="main_s.lua" />
+
+    <script src="main_c.lua" type="client" />
+ 
+
+</meta>

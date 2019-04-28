@@ -1,0 +1,11 @@
+addEventHandler ( "onVehicleExplode", resourceRoot, function()
+    setTimer(function (vehicle)
+        destroyElement(vehicle)
+    end,3000,1,source)
+end )
+
+addEventHandler ( "onVehicleExplode", resourceRoot, function()
+    setTimer(function (vehicle)
+        destroyElement(vehicle)
+    end,3000,1,source)
+end )

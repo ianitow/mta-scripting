@@ -3,6 +3,7 @@ function wastedWhenAnimON()
          setPedAnimation(source,nil)
           toggleAllControls(source,true,true,true) 
           removeWhenDeath(source)
+          source:setData(DATA_TO_ANIM,false)  
           destroyBlipSAMU(source:getData(DATA_TO_COL))
           
 end
@@ -23,6 +24,10 @@ function startAnimSamu ( config)
         if(isPedInVehicle(client)) then
             removePedFromVehicle(client)
             setElementPosition(x+2,y+2,z+4)
+        end
+        for i, k in pairs(getAllPlayersSAMU()) do
+            triggerClientEvent ("showPaciente", k, client )
+        
         end
         setPedAnimation(client,"crack","crckdeth2",-1,true,false,false,false)
         toggleAllControls(client,false,true,false)

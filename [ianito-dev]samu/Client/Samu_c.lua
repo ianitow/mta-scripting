@@ -15,7 +15,14 @@ addEventHandler ( "onClientPlayerDamage", getLocalPlayer(), checkHealthToCallAni
 
 
 
+function showPaciente(paciente)
+    
+    exports['notification']:addNotification("#FF0000[SAMU]#FFFFFF O player #FF0000"..paciente.name.."#FFFFFF necessita de ajuda!", "info", 5000, "right-top")
+	
+end
 
+addEvent( "showPaciente", true )
+addEventHandler( "showPaciente", localPlayer, showPaciente )
 
 
 function onMedicStartJob(medic,pacient)
