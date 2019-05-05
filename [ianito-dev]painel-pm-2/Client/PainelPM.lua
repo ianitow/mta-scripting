@@ -342,6 +342,7 @@ function PainelPM.onPoliceEnterCol(shape,matchingDimension)
    if(matchingDimension) then
       if source == localPlayer then
         if(getElementData(shape,DATA_IS_COL_SHOW)) then
+         
             if not first then
                  addEventHandler("onClientRender",root,eventOnEnter)
              end
@@ -364,6 +365,16 @@ function PainelPM.onPoliceLeaveCol(shape,matchingDimension)
      end
  end
 
+
+ addEventHandler("onClientPlayerJoin",root,function()
+    local col = createColSphere(x,y,z,1)
+    attachElements(col,k)
+    setElementData(k,DATA_COL_TO_SHOW,col)
+    setElementData(col,DATA_PLAYER_SELECTED,k)
+    setElementData(col,DATA_IS_COL_SHOW,true)
+    addEventHandler("onClientElementColShapeHit",root,PainelPM.onPoliceEnterCol)
+    addEventHandler("onClientElementColShapeLeave",root,PainelPM.onPoliceLeaveCol) 
+end)
 
 addEventHandler("onClientResourceStart", resourceRoot, function()
     Toolkit.getInstance():add(PainelPM.getInstance())

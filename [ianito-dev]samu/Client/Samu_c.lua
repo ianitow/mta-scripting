@@ -17,7 +17,7 @@ addEventHandler ( "onClientPlayerDamage", getLocalPlayer(), checkHealthToCallAni
 
 function showPaciente(paciente)
     
-    exports['notification']:addNotification("#FF0000[SAMU]#FFFFFF O player #FF0000"..paciente.name.."#FFFFFF necessita de ajuda!", "info", 5000, "right-top")
+    exports['notification']:addNotification("#FF0000[SAMU]#FFFFFF O player #FF0000"..paciente.name.."#FFFFFF necessita de ajuda!", "info", 5000, "top")
 	
 end
 
@@ -27,7 +27,7 @@ addEventHandler( "showPaciente", localPlayer, showPaciente )
 
 function onMedicStartJob(medic,pacient)
     
-    exports['notification']:addNotification("#FF0000[SAMU]#FFFFFF O médico #FF0000 "..getPlayerName(medic).."#FFFFFF está curando o player: #FF0000"..getPlayerName(pacient), "info", 5000, "top")
+    exports['notification']:addNotification("#FF0000[SAMU]#FFFFFFVocê está curando o player: #FF0000"..getPlayerName(pacient), "info", 5000, "top")
 	
 end
 

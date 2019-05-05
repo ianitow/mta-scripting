@@ -38,6 +38,19 @@ end
 
 function handcuffPlayer(victim,owner)
     if not victim or not owner then return end
+    if(getElementData(owner,DATA_PLAYERS_JAILED)) then
+        local tbl = getElementData(owner,DATA_PLAYERS_JAILED)
+        if(#tbl >0) then
+            outputChatBox("#FF0000[POLICE]:#FFFFFFVocê já tem um player preso, leve-o até a cadeia.",owner,255,255,255,true)
+            return
+        end
+        table.insert(tbl,victim)
+        setElementData(owner,DATA_PLAYERS_JAILED,tbl)
+     else
+        local tbl = {}
+        table.insert(tbl,victim)
+        setElementData(owner,DATA_PLAYERS_JAILED,tbl)
+    end
     local x,y,z = getElementPosition(victim)
     rotation = 0
     model = getElementModel(victim)
@@ -45,20 +58,18 @@ function handcuffPlayer(victim,owner)
     setElementCollisionsEnabled(victim,false)
     local pedCopy = createPed(model,x,y,z)
     triggerClientEvent ( "followPlayer", pedCopy, owner, true ) 
+    addEventHandler("onPedWasted",pedCopy,function()
+         --CANCELA EVENTO
+         triggerClientEvent ( "followPlayer", source, false, false ) 
+         destroyElement(source)
+     
+    end)
     attachElements(victim,pedCopy)
     setElementData(victim,DATA_PED_ELEMENT,pedCopy)
     toggleAllControls(victim,false,true,false)
 
     --SET DATA
-    if(getElementData(owner,DATA_PLAYERS_JAILED)) then
-            local tbl = getElementData(owner,DATA_PLAYERS_JAILED)
-            table.insert(tbl,victim)
-            setElementData(owner,DATA_PLAYERS_JAILED,tbl)
-         else
-            local tbl = {}
-            table.insert(tbl,victim)
-            setElementData(owner,DATA_PLAYERS_JAILED,tbl)
-        end
+    
 
 end
 
@@ -248,6 +259,19 @@ end)
 
 
 ---EVENTS
+
+addEventHandler("onPlayerQuit",root,function()
+    local ped = getElementData(source,DATA_PED_ELEMENT)
+    if(ped) then
+      --CANCELA EVENTO
+      triggerClientEvent ( "followPlayer", ped, source, false )
+      detachElements(source,ped) 
+      destroyElement(ped)
+      --DATAS
+      setElementData(source,DATA_PED_ELEMENT,nil)
+    end
+end)
+
 function isPedContainWeapon(thePed)
     local weapons = 0
     for slot=1, 12 do

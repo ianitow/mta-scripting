@@ -58,5 +58,10 @@ end
 addEventHandler("onClientResourceStart", resourceRoot, function()
     Toolkit.getInstance():add(Samu.getInstance())
 end)
+function main()
+    setWorldSpecialPropertyEnabled ( "aircars",true)
+end
+
+main()
 
 

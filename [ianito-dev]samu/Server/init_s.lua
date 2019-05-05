@@ -91,9 +91,7 @@ end
 
 
 function startJobRestore(medic,paciente)
-    for i,k in pairs(getAllPlayersSAMU()) do
-        triggerClientEvent ("onMedicStartJob", k, medic,paciente )
-    end
+    triggerClientEvent ("onMedicStartJob", medic, medic,paciente )
     setPedAnimation(medic,"medic","cpr",-1,true,false,false,true)
     
     --WHEN ANIM OVER
@@ -118,14 +116,12 @@ end
 function createBlipToSAMU(colshape)
     local blip = createBlipAttachedTo(colshape,21,1)
     colshape:setData(DATA_BLIP,blip)
-
-    for i,k in pairs(getElementsByType("player")) do
-        setElementVisibleTo(blip,k,false)
-        local account = getPlayerAccount(k)
-        if(isObjectInACLGroup("user."..getAccountName(account),aclGetGroup(ACL_TO_CALL))) then
-            setElementVisibleTo(blip,k,true) 
-        end
-    end
+    
+    setElementVisibleTo(blip, root, false)
+for i,k in pairs(getAllPlayersSAMU()) do
+    setElementVisibleTo(blip, k, true)
+end
+   
 end
 
 function destroyBlipSAMU(colshape)
@@ -143,6 +139,7 @@ end
 addCommandHandler("curar",function (player,cmd)
     local otherPlayer = player:getData(DATA_COL_PLAYER)
     local account = getPlayerAccount(player)
+    if isGuestAccount(account) or not account then return end
     if not (isObjectInACLGroup("user."..getAccountName(account),aclGetGroup(ACL_TO_CALL))) then
        outputChatBox(ERROR_MESSAGE_ACL,player,255,255,255,true)
        return
@@ -158,13 +155,12 @@ end)
 
 
 
+
 addEventHandler("onResourceStop",resourceRoot,function()
     for i,thePlayer in pairs(getElementsByType("player"))do
-
         setElementData(thePlayer,DATA_TO_ANIM,nil)
         setElementData(thePlayer,DATA_TO_COL,nil)
         setElementData(thePlayer,DATA_COL_PLAYER,nil)
-
         setElementData(thePlayer,DATA_BLIP,nil)
        
     end
