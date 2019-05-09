@@ -1,0 +1,16 @@
+﻿<xml>
+	<info author="Loord" version="1.0" name="Painel Veículo - GTA Vida Fixa" />
+	
+	<script src="sourceC.lua" type="client" cache="false" />
+	<script src="sourceS.lua" type="server" />
+	
+	<file src="gfx/bgPanel.png" />
+	<file src="gfx/down.png" />
+	<file src="gfx/up.png" />
+	<file src="gfx/left.png" />
+	<file src="gfx/right.png" />
+	<file src="gfx/iconRepair.png" />
+	<file src="gfx/iconFlip.png" />
+	<file src="gfx/iconMotor.png" />
+	<file src="gfx/freio.png" />
+</xml>

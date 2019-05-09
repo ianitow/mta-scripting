@@ -376,6 +376,15 @@ function PainelPM.onPoliceLeaveCol(shape,matchingDimension)
     addEventHandler("onClientElementColShapeLeave",root,PainelPM.onPoliceLeaveCol) 
 end)
 
+
+addEventHandler("onClientPlayerQuit",root,function()
+    local col = source:getData(DATA_COL_TO_SHOW)
+    detachElements(col)
+    destroyElement(col)
+   
+end)
+
+
 addEventHandler("onClientResourceStart", resourceRoot, function()
     Toolkit.getInstance():add(PainelPM.getInstance())
 

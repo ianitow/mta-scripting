@@ -172,7 +172,7 @@ function letPlayerExitJail(player)
     setElementPosition(player,JAIL_OUT_X,JAIL_OUT_Y,JAIL_OUT_Z)
     setElementInterior(player,0)
     outputChatBox(MESSAGE_LET_JAIL,player,255,255,255,true)
-    
+    setPlayerWantedLevel(player,0)
 end
 
 
