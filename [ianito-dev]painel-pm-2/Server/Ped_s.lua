@@ -83,10 +83,11 @@ function onPoliceEnterMarker(hitElement,matchingDimension)
             outputChatBox(MESSAGE_ERROR_NOT_POLICE,hitElement,255,255,255,true)    
             return 
         end 
-        if not isObjectInACLGroup("user."..getAccountName(getPlayerAccount(hitElement)),aclGetGroup(ACL_NAME)) then
+        if not (getElementData(hitElement,DATA_IS_ALLOWED_TO_USE) and getElementType(hitElement) == "player") then
          outputChatBox(MESSAGE_ERROR_NOT_POLICE,hitElement,255,255,255,true)    
             return
         end
+        outputChatBox(MESSAGE_ERROR_NOT_POLICE,hitElement,255,255,255,true)
     end
 end
 
@@ -98,7 +99,7 @@ addEventHandler( "onMarkerHit", MARKER, onPoliceEnterMarker )
 
 
 
-function jailPlayer(thePlayer,marker)
+function jailPlayer(thePlayer,marker,direct,restTime)
     if isGuestAccount(getPlayerAccount(thePlayer)) then 
         outputChatBox(MESSAGE_ERROR_NOT_POLICE,thePlayer,255,255,255,true)    
         return 
@@ -107,6 +108,29 @@ function jailPlayer(thePlayer,marker)
         outputChatBox(MESSAGE_ERROR_NOT_POLICE,thePlayer,255,255,255,true)    
         return
     end
+    if direct then
+         outputChatBox("#FF0000[POLICE]:#FFFFFFVocê foi preso novamente. ",thePlayer,255,255,255,true)
+               
+                
+                --DATAS
+                setElementData(thePlayer,DATA_PED_ELEMENT,nil)
+                setElementData(thePlayer,DATA_IS_PLAYER_JAIL,true)
+                setElementData(thePlayer,DATA_TIMER_LEFT,restTime)
+                --OTHERS
+                toggleAllControls(thePlayer,true,true,true)
+                setCameraTarget(thePlayer,nil)
+                setTimer(letPlayerExitJail,restTime,1,thePlayer)
+                  --ENVIA PRA CADEIRA
+                
+                  setElementCollisionsEnabled(thePlayer,true)
+                  setElementPosition(thePlayer,JAIL_X,JAIL_Y,JAIL_Z)
+                  setElementInterior(thePlayer,6)
+                  setElementAlpha(thePlayer,255)
+        return true
+ end
+  
+        
+   
     if(isElementWithinMarker(thePlayer,MARKER)) then
         local players = getElementData(thePlayer,DATA_PLAYERS_JAILED)
         if not players or #players == 0 then
@@ -150,8 +174,11 @@ addCommandHandler(COMMAND,jailPlayer)
 
 --EVENTS
 function onPoliceAttack ( attacker, weapon, bodypart, loss ) --when a player is damaged
+    if not attacker then
+        return nil
+    end
     if isGuestAccount(getPlayerAccount(attacker)) then return end 
-    if not isObjectInACLGroup("user."..getAccountName(getPlayerAccount(attacker)),aclGetGroup(ACL_NAME)) then
+    if not (getElementData(attacker,DATA_IS_ALLOWED_TO_USE))    then
         return
     end
     if(weapon == 3 ) then
@@ -192,16 +219,7 @@ function mainTimer()
 end
 mainTimer()
 
--- addCommandHandler("clear",function (thePlayer,cmd)
---     setElementAlpha(thePlayer,255)
---     setElementCollisionsEnabled(thePlayer,true)
---     detachElements(thePlayer)
---     destroyElement(getElementData(thePlayer,DATA_PED_ELEMENT))
---     toggleAllControls(thePlayer,true,true,true)
---     setElementData(thePlayer,DATA_IS_PLAYER_JAIL,false)
---     setElementData(thePlayer,DATA_TIMER_LEFT,nil)
---     setElementData(thePlayer,DATA_PLAYERS_JAIL,nil)
--- end)
+
 
 
 addEventHandler("onPlayerQuit",resourceRoot,function()
@@ -232,7 +250,6 @@ addEventHandler("onResourceStop",resourceRoot,function()
 
 
 
-
         setElementData(thePlayer,DATA_IS_PLAYER_JAIL,nil)
         setElementData(thePlayer,DATA_PLAYERS_JAILED,nil)
         setElementData(thePlayer,DATA_PED_ELEMENT,nil)
@@ -248,6 +265,8 @@ addEventHandler("onResourceStop",resourceRoot,function()
         setElementData(thePlayer,DATA_PLAYER_SELECTED ,nil)
 
         setElementData(thePlayer,DATA_IS_PLAYER_HANDCUFF,nil)
+        setElementData(thePlayer,DATA_IS_ALLOWED_TO_USE,nil)
+       
     end
 end)
  
@@ -260,6 +279,11 @@ end)
 
 ---EVENTS
 
+addEventHandler("onPlayerLogign",root,function(_,account)
+    if(getAccountData(account,DATA_TIMER_LEFT)) then
+        jailPlayer(source,nil,true,getAccountData(account,DATA_TIMER_LEFT))
+    end
+end)
 addEventHandler("onPlayerQuit",root,function()
     local ped = getElementData(source,DATA_PED_ELEMENT)
     if(ped) then
@@ -269,6 +293,10 @@ addEventHandler("onPlayerQuit",root,function()
       destroyElement(ped)
       --DATAS
       setElementData(source,DATA_PED_ELEMENT,nil)
+      if(getElementData(source,DATA_IS_PLAYER_JAIL)) then
+        local account = getPlayerAccount(source)
+        setAccountData(account,DATA_TIMER_LEFT,getElementData(source,DATA_IS_PLAYER_JAIL))
+    end
     end
 end)
 

@@ -40,8 +40,7 @@ button:active{
 
 
     self.panelExtern = Panel()
-    self.panelExtern:setBounds(Graphics.getInsets(0,0,247,0))
-    self.panelExtern:setSize(425,480)
+    self.panelExtern:setSize(425,440)
     self.panelExtern:setLocation(self.screenX/3,self.screenY/4.5)
     self.panelExtern:setBackground(0,0,0,150)
 	self.panelExtern:setBorder(LineBorder(tocolor(0,0,0),2))
@@ -118,6 +117,14 @@ button:active{
     self.labelNameSuspect:setAlignment(Label.LEFT)
     self.panelInfoPlayer:add(self.labelNameSuspect)
 
+    self.labelHabilitacao = Label("Habilitação: #FF0000"..tostring(formatHabilitacao(localPlayer)))
+    self.labelHabilitacao:setForeground(tocolor(255,255,255,255))
+    self.labelHabilitacao:setBackground(tocolor(255,255,255,1))
+    self.labelHabilitacao:setScale(1)
+    self.labelHabilitacao:setBounds(self.labelNameSuspect:getX()+self.labelNameSuspect:getTextWidth()+50,self.labelNameSuspect:getY(),self.panelInfoPlayer:getWidth(),20)
+    self.labelHabilitacao:setAlignment(Label.LEFT)
+    self.panelInfoPlayer:add(self.labelHabilitacao)
+
     self.labelHealth = Label("Vida: #FF0000100%")
     self.labelHealth:setForeground(tocolor(255,255,255,255))
     self.labelHealth:setBackground(tocolor(255,255,255,1))
@@ -164,7 +171,7 @@ button:active{
    
 
     self.panelCommands = Panel()
-    self.panelCommands:setSize(self.panelExtern:getWidth(),225)
+    self.panelCommands:setSize(self.panelExtern:getWidth(),185)
     self.panelCommands:setLocation(0,self.panelDecorator:getHeight()+self.panelDecorator:getY()+5)
     self.panelCommands:setBackground(0,0,0,150)
 	--self.panelCommands:setBorder(LineBorder(tocolor(0,0,255),2))
@@ -188,23 +195,26 @@ button:active{
 	self.buttonPorte:addMouseListener(self)
     self.panelCommands:add(self.buttonPorte)
 
-    self.buttonCheckCNH = Button("CHECAR CNH")
-    self.buttonCheckCNH:setBounds(5,self.buttonPorte:getHeight()+self.buttonPorte:getY()+5,self.panelCommands:getWidth()-10,40)
-    self.buttonCheckCNH:setStyleClass("btnLogin")
-	self.buttonCheckCNH:addMouseListener(self)
-    self.panelCommands:add(self.buttonCheckCNH)
+    -- self.buttonCheckCNH = Button("CHECAR CNH")
+    -- self.buttonCheckCNH:setBounds(5,self.buttonPorte:getHeight()+self.buttonPorte:getY()+5,self.panelCommands:getWidth()-10,40)
+    -- self.buttonCheckCNH:setStyleClass("btnLogin")
+	-- self.buttonCheckCNH:addMouseListener(self)
+    -- self.panelCommands:add(self.buttonCheckCNH)
 
     self.buttonTakeWeapon = Button("PEGAR ARMAS / DROGAS")
-    self.buttonTakeWeapon:setBounds(5,self.buttonCheckCNH:getHeight()+self.buttonCheckCNH:getY()+5,self.panelCommands:getWidth()-10,40)
+    self.buttonTakeWeapon:setBounds(5,self.buttonPorte:getHeight()+self.buttonPorte:getY()+5,self.panelCommands:getWidth()-10,40)
     self.buttonTakeWeapon:setStyleClass("btnLogin")
 	self.buttonTakeWeapon:addMouseListener(self)
     self.panelCommands:add(self.buttonTakeWeapon)
 
     
     self.panelSetNivel = Panel()
-    self.panelSetNivel:setBounds(855,550,200,100)
+    self.panelSetNivel:setBounds(Graphics.getInsets(505,345,0,0))
+    self.panelSetNivel:setSize(200,100)
     self.panelSetNivel:setBackground(0,0,0,150)
     self.panelSetNivel:setBorder(LineBorder(tocolor(0,0,0),2))
+    self:add(self.panelSetNivel)
+
     
     self.panelSetNivelTitle = Panel()
     self.panelSetNivelTitle:setBounds(self.panelSetNivel:getX(),self.panelSetNivel:getY()-20,self.panelSetNivel:getWidth(),20)
@@ -246,9 +256,9 @@ button:active{
 
 
     self:add(self.panelSetNivelTitle)
-    self:add(self.panelSetNivel)
-    self.panelSetNivel:setVisible(false)
-    self.panelSetNivelTitle:setVisible(false)
+    
+    self.panelSetNivel:setVisible(true)
+    self.panelSetNivelTitle:setVisible(true)
 
     self.onPlayerPressKey = function (button,press)
         if(isChatBoxInputActive()) then
@@ -301,7 +311,7 @@ button:active{
        
     end
     addEventHandler("onClientKey", root, self.onPlayerPressKey)
-    self:setVisible(false)
+    self:setVisible(true)
     return self
 
 end
@@ -320,7 +330,7 @@ function PainelPM:updateInfos(selected)
     self.labelNameSuspect:setText("Nome: #FF0000"..tostring(selected.name))
     self.labelArmor:setText("Colete: #DCDCDC"..tostring(armor).."%")
     self.labelMoney:setText("Dinheiro: #00FF00R$"..tostring(money))
-    
+    self.labelHabilitacao:setText("Habilitação: #FF0000"..tostring(formatHabilitacao(selected)))
   
 end
 
@@ -469,3 +479,55 @@ end
 
     
 
+function formatHabilitacao(player)
+
+    if(player) then
+        local s;
+        local carro = player:getData("Habilitacoes:Carros")
+        local moto = player:getData("Habilitacoes:Motos")
+        local caminhao = player:getData("Habilitacoes:Caminhoes")
+        local onibus = player:getData("Habilitacoes:Onibus")
+        local avioes = player:getData("Habilitacoes:Avioes")
+
+        if(moto) then
+            if not s then
+                s = s +"Moto,"
+            end
+        end
+        if(carro) then
+            if not s then
+                s = s +",Carro"
+            else
+                s = 'Carro'
+            end
+        end
+      
+        if(caminhao) then
+            if not s then
+                s = s +",Caminhão"
+            else
+                s = 'Caminhão'
+            end
+        end
+        if(onibus) then
+            if not s then
+                s = s +",Bus"
+            else
+                s = 'Bus'
+            end
+        end
+        if(avioes) then
+            if not s then
+                s = s +",Avião"
+            else
+                s = 'Avião'
+            end
+        end
+
+        if(s == nil) then
+            s = "Não."
+        end
+       return s; 
+    end
+    
+end

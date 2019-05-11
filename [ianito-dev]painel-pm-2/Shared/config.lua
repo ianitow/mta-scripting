@@ -42,6 +42,6 @@ MESSAGE_ERROR_NOT_WANTED = "#FF0000[SERVER]:#FFFFFF Player não está sendo proc
 MESSAGE_ERROR_NOT_POLICE = "#FF0000[SERVER]:#FFFFFF Afaste-se! Você não é um policial."
 MESSAGE_NOT_INSIDE_MARKER = "#FF0000[SERVER]:#FFFFFF Você não está dentro do marcador."
 MESSAGE_NOT_PLAYERS_JAILED = "#FF0000[SERVER]:#FFFFFF Você não tem presos te seguindo."
-
 MESSAGE_JAILED_PLAYER = "#FF0000[SERVER]:#FFFFFF Você está algemado."
 MESSAGE_UNJAILED_PLAYER = "#FF0000[SERVER]:#FFFFFF Você foi solto."
+MESSAGE_LET_CRIMINAL = "#FF0000[SERVEER]:#FFFFFFDigite #FF0000 "..COMMAND.." #FFFFFF para deixar o preso."
