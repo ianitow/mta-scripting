@@ -24,6 +24,21 @@ end
 addEvent( "showPaciente", true )
 addEventHandler( "showPaciente", localPlayer, showPaciente )
 
+function disableKill()
+    cancelEvent()
+end
+function receiveFromServer(state)
+    if(state) then
+        addEventHandler("onClientPlayerDamage",root,disableKill)
+        unbindKey("lshift","both")
+    else
+        bindKey("lshift","both","jump")
+        setElementCollisionsEnabled(source,true)
+        removeEventHandler("onClientPlayerDamage",root,disableKill)
+    end
+end
+addEvent("receiveFromServer",true)
+addEventHandler("receiveFromServer",root,receiveFromServer)
 
 function onMedicStartJob(medic,pacient)
     

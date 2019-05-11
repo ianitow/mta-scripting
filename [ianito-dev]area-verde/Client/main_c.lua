@@ -43,6 +43,7 @@ function stopDamageWhenArea ( attacker, weapon, bodypart )
 end
 addEventHandler ( "onClientPlayerDamage", getLocalPlayer(), stopDamageWhenArea )
 
+
 function activeGhostMode()
     for i, k in pairs(getElementsByType("player")) do
        
@@ -53,6 +54,21 @@ function activeGhostMode()
 	for i, k in pairs(getElementsByType("vehicle")) do
        
 		setElementCollidableWith(source,k,false)
+	
+end
+
+if(getElementType(source) == "vehicle") then
+	for i,k in pairs(getElementsByType("player")) do
+		setElementCollidableWith(source,k,false)
+	end
+	for i,k in pairs(getElementsByType("vehicle")) do
+		setElementCollidableWith(source,k,false)
+	end
+	
+	
+end
+executeCommandHandler("Toggle Driveby")
+if(getElementData(localPlayer,"isDriveShootingEnabled")) then
 	
 end
     return true
@@ -71,8 +87,26 @@ function disableGhostMode()
 		setElementCollidableWith(source,k,true)
 	
 end
+if(getElementType(source) == "vehicle") then
+	for i,k in pairs(getElementsByType("player")) do
+		setElementCollidableWith(source,k,true)
+	end
+	for i,k in pairs(getElementsByType("vehicle")) do
+		setElementCollidableWith(source,k,true)
+	end
 	
+end
 return true
 end
 addEvent("disableGhost",true)
 addEventHandler("disableGhost",root,disableGhostMode)
+
+
+function handleVehicleDamage(attacker, weapon, loss, x, y, z, tire)
+	
+	if(getElementData(source,IS_PLAYER_PROTECTED)) then
+		cancelEvent()
+	end
+	
+end
+addEventHandler("onClientVehicleDamage", root, handleVehicleDamage)

@@ -20,18 +20,18 @@ function static.onPlayerEnterAreVerde (thePlayer,matchingDimension)
     
     if(matchingDimension) then
         setElementAlpha(thePlayer,120)
-        
+        setElementData(thePlayer,IS_PLAYER_PROTECTED,true)
         if(getElementType(thePlayer) == "player") then
             outputChatBox("#0000FF[REVOLUTION]#FFFFFFVocê entrou na área verde!",thePlayer,255,255,255,true)
             table.insert(playersInArea,thePlayer)
-            setElementData(thePlayer,IS_PLAYER_PROTECTED,true)
+            
             toggleControl(thePlayer,"fire",false)
         
             toggleControl(thePlayer,"aim_weapon",false)
             updatePlayersInArea()
-            triggerClientEvent("activeGhost",thePlayer)
+            
         end
-        
+        triggerClientEvent("activeGhost",thePlayer)
     end
 end
 
@@ -42,17 +42,18 @@ function static.onPlayerLeaveAreaVerde (thePlayer,matchingDimension)
     
     if(matchingDimension) then
         setElementAlpha(thePlayer,255)
+        setElementData(thePlayer,IS_PLAYER_PROTECTED,false)
+           
         if(getElementType(thePlayer) == "player") then
             outputChatBox("#0000FF[REVOLUTION]#FFFFFFVocê saiu da área verde!",thePlayer,255,255,255,true)
             removeTableByPlayer(thePlayer)
-            setElementData(thePlayer,IS_PLAYER_PROTECTED,false)
             toggleControl(thePlayer,"fire",true)
-            triggerClientEvent("disableGhost",thePlayer)
+           
             toggleControl(thePlayer,"aim_weapon",true)
         
             updatePlayersInArea()
         end
-        
+        triggerClientEvent("disableGhost",thePlayer)
     end
 end
 
@@ -72,3 +73,13 @@ function updatePlayersInArea()
     setElementData(getResourceRootElement(),RESOURCE_DATA,playersInArea)
 end
 
+function displayVehicleLoss(loss)
+    local thePlayer = getVehicleOccupant(source)
+    if(thePlayer) then -- Check there is a player in the vehicle
+        if(getElementData(source,IS_PLAYER_PROTECTED)) then
+            setElementHealth(source,getElementHealth(source)+loss)
+        end
+    end
+end
+
+addEventHandler("onVehicleDamage", root, displayVehicleLoss)

@@ -29,6 +29,7 @@ function startAnimSamu ( config)
             triggerClientEvent ("showPaciente", k, client )
         
         end
+        triggerClientEvent(client,"receiveFromServer",client,true)
         setPedAnimation(client,"crack","crckdeth2",-1,true,false,false,false)
         toggleAllControls(client,false,true,false)
         
@@ -42,6 +43,7 @@ function startAnimSamu ( config)
         addEventHandler ( "onPlayerWasted", client, wastedWhenAnimON )
 
     else
+       
         setPedAnimation(client,nil)
           toggleAllControls(client,true,true,true) 
         
@@ -108,6 +110,7 @@ function startJobRestore(medic,paciente)
         toggleAllControls(pac,true,true,true) 
         triggerClientEvent ("destroyPNGHeart",m)
         destroyElement(colshapePlayer)
+        triggerClientEvent(pac,"receiveFromServer",pac,false)
     end,TIME_TO_RESTORE,1,medic,paciente)
    
 
