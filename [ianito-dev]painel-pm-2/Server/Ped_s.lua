@@ -144,12 +144,12 @@ function jailPlayer(thePlayer,marker,direct,restTime)
                             --DATAS
                             setElementData(k,DATA_PED_ELEMENT,nil)
                             setElementData(k,DATA_IS_PLAYER_JAIL,true)
-                            setElementData(k,DATA_TIMER_LEFT,tonumber(getPlayerWantedLevel(k) * 60000))
+                            setElementData(k,DATA_TIMER_LEFT,tonumber(getPlayerWantedLevel(k) * TIME_PER_STAR))
                             --OTHERS
                             toggleAllControls(k,true,true,true)
                             setCameraTarget(k,nil)
                             
-                            setTimer(letPlayerExitJail,(getPlayerWantedLevel(k) * 60000),1,k)
+                            setTimer(letPlayerExitJail,(getPlayerWantedLevel(k) * TIME_PER_STAR),1,k)
                            
                               --ENVIA PRA CADEIRA
                             

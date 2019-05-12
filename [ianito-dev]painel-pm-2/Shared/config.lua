@@ -4,7 +4,7 @@ COMMAND = "transferir"
 BUTTON_OPEN = 'n'
 MARKER_POSITION = {1579.65210, -1635.42102, 12.56098}
 
-TIME_PER_STAR = tonumber(60000) --Em milisegundos 60000 = 1 minuto ou 60 segundos
+TIME_PER_STAR = tonumber(60000)
 
 JAIL_X = 264.89337
 JAIL_Y =77.62918
