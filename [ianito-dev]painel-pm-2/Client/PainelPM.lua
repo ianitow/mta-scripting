@@ -257,8 +257,8 @@ button:active{
 
     self:add(self.panelSetNivelTitle)
     
-    self.panelSetNivel:setVisible(true)
-    self.panelSetNivelTitle:setVisible(true)
+    self.panelSetNivel:setVisible(false)
+    self.panelSetNivelTitle:setVisible(false)
 
     self.onPlayerPressKey = function (button,press)
         if(isChatBoxInputActive()) then
@@ -311,14 +311,14 @@ button:active{
        
     end
     addEventHandler("onClientKey", root, self.onPlayerPressKey)
-    self:setVisible(true)
+    self:setVisible(false)
     return self
 
 end
 
 function PainelPM:updateInfos(selected)
     local health = getElementHealth(selected)
-    local armor = getPlayerArmor(selected)
+    local armor = getPedArmor(selected)
     local money = getPlayerMoney(selected)
     local isHandCuff =  getElementData(selected,DATA_IS_PLAYER_HANDCUFF)
     if(isHandCuff) then
@@ -349,6 +349,7 @@ end
 
 
 function PainelPM.onPoliceEnterCol(shape,matchingDimension)
+
    if(matchingDimension) then
       if source == localPlayer then
         if(getElementData(shape,DATA_IS_COL_SHOW)) then
@@ -376,15 +377,6 @@ function PainelPM.onPoliceLeaveCol(shape,matchingDimension)
  end
 
 
- addEventHandler("onClientPlayerJoin",root,function()
-    local col = createColSphere(x,y,z,1)
-    attachElements(col,k)
-    setElementData(k,DATA_COL_TO_SHOW,col)
-    setElementData(col,DATA_PLAYER_SELECTED,k)
-    setElementData(col,DATA_IS_COL_SHOW,true)
-    addEventHandler("onClientElementColShapeHit",root,PainelPM.onPoliceEnterCol)
-    addEventHandler("onClientElementColShapeLeave",root,PainelPM.onPoliceLeaveCol) 
-end)
 
 
 addEventHandler("onClientPlayerQuit",root,function()
@@ -477,7 +469,7 @@ function PainelPM:mousePressed(e)
 	end
 end
 
-    
+
 
 function formatHabilitacao(player)
 
@@ -531,3 +523,16 @@ function formatHabilitacao(player)
     end
     
 end
+
+
+
+function onPlayerJoinClient()
+    local x,y,z = getElementPosition(source)
+    local col = createColSphere(x,y,z,1)
+    attachElements(col,source)
+    setElementData(source,DATA_COL_TO_SHOW,col)
+    setElementData(col,DATA_PLAYER_SELECTED,source)
+    setElementData(col,DATA_IS_COL_SHOW,true)
+   
+end
+addEventHandler("onClientPlayerJoin",root,onPlayerJoinClient)

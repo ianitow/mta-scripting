@@ -29,7 +29,7 @@ end )
 function FollowToPlayer() 
     local ped = follower --Ped who has to follow the player 
     local plr = followTo -- The Player 
-    dxDrawTextOnElement(ped,"Capturado por:"..plr.name,1,20,255,255,255,255,1.5,"diploma")
+    dxDrawTextOnElement(ped,"Capturado por:"..plr.name,1,20,255,255,255,255,1,"diploma")
     if ped then 
         local x, y, z = getElementPosition( plr ); 
         local px, py, pz = getElementPosition( ped ); 
