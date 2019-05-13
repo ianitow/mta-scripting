@@ -8,14 +8,16 @@ function algemarPlayer(player,state)
         toggleAllControls(player,false,true,false)
         setPedAnimation(player,"kissing","gift_give",-1,true,false,false,true)
      
-       timer = setTimer(function(ped,s) 
+       if(player) then
+        timer = setTimer(function(ped,s) 
             if  (ped) then
                 setPedAnimationProgress(ped,"gift_give",1.1)
 
             end
          
       
-        end, 50, 0,player,timer)
+        end, 50, 0,player,timer)   
+    end
     else
         if isTimer(timer) then killTimer(timer) end
         setElementFrozen(player,false)
