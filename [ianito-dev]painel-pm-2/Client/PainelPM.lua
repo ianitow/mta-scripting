@@ -101,7 +101,7 @@ button:active{
     self.panelTitle:setBackground(0,0,0,200)
     self.panelInfoPlayer:add(self.panelTitle)
 
-    self.labelTitle = Label("Informações do Suspeito")
+    self.labelTitle = Label("Informações do cidadão")
     self.labelTitle:setForeground(tocolor(255,255,255,255))
     self.labelTitle:setBackground(tocolor(255,255,255,1))
     self.labelTitle:setScale(1)
@@ -209,23 +209,31 @@ button:active{
 
     
     self.panelSetNivel = Panel()
-    self.panelSetNivel:setBounds(Graphics.getInsets(505,345,0,0))
+    self.panelSetNivel:setBounds(self.panelExtern:getX()+self.panelExtern:getWidth()+5,(self.panelExtern:getY()+self.panelExtern:getHeight())/1.2)
     self.panelSetNivel:setSize(200,100)
+    self.panelSetNivel:setZOrder(999)
     self.panelSetNivel:setBackground(0,0,0,150)
     self.panelSetNivel:setBorder(LineBorder(tocolor(0,0,0),2))
     self:add(self.panelSetNivel)
 
     
     self.panelSetNivelTitle = Panel()
-    self.panelSetNivelTitle:setBounds(self.panelSetNivel:getX(),self.panelSetNivel:getY()-20,self.panelSetNivel:getWidth(),20)
+    self.panelSetNivelTitle.decorator = true
+    self.panelSetNivelTitle:setBounds(0,-20,self.panelSetNivel:getWidth(),20)
     self.panelSetNivelTitle:setBackground(0,0,0,255)
     self.panelSetNivelTitle:setBorder(LineBorder(tocolor(0,0,0),2))
+    
+
+
+    self.panelSetNivel:add(self.panelSetNivelTitle)
 
     self.labelTitleNivel = Label("Setar Nível")
+    self.labelTitleNivel.decorator = true
     self.labelTitleNivel:setForeground(tocolor(255,255,255,255))
     self.labelTitleNivel:setBackground(tocolor(255,255,255,1))
     self.labelTitleNivel:setScale(1)
-    self.labelTitleNivel:setBounds(0,0,self.panelSetNivelTitle:getWidth(),self.panelSetNivelTitle:getHeight())
+    self.labelTitleNivel:setBounds(0,0,self.panelSetNivelTitle:getWidth(),20)
+    self.labelTitleNivel:setZOrder(1)
     self.labelTitleNivel:setAlignment(Label.CENTER)
     self.panelSetNivelTitle:add(self.labelTitleNivel)
 
@@ -241,7 +249,8 @@ button:active{
     self.buttonSetNivel = Button("SETAR")
     self.buttonSetNivel:setBounds(self.panelSetNivel:getWidth()-150,self.panelSetNivel:getHeight()-35,100,30)
     self.buttonSetNivel:setStyleClass("btnLogin")
-	self.buttonSetNivel:addMouseListener(self)
+    self.buttonSetNivel:addMouseListener(self)
+    self.buttonSetNivel:setZOrder(2)
     self.panelSetNivel:add(self.buttonSetNivel)
 
     self.fieldRegister = TextField();
@@ -254,8 +263,6 @@ button:active{
     self.visible = true
 
 
-
-    self:add(self.panelSetNivelTitle)
     
     self.panelSetNivel:setVisible(false)
     self.panelSetNivelTitle:setVisible(false)
@@ -281,9 +288,13 @@ button:active{
                 if(getElementData(k,DATA_IS_COL_SHOW)) then
                     if(button == BUTTON_OPEN)then
                         if(press) then
+                         
+                           
                             local selected = getElementData(k,DATA_PLAYER_SELECTED)
                             
-                            
+                            if(selected:getData(DATA_IS_ALLOWED_TO_USE)) then
+                                return
+                            end
                                 if  getElementData(localPlayer,DATA_IS_ALLOWED_TO_USE) then
                                     self:updateInfos(selected)
                                     self:setVisible(true)
@@ -341,8 +352,11 @@ local pedActual = nil
 local fisrt = true
   function eventOnEnter()
     if  getElementData(localPlayer,DATA_IS_ALLOWED_TO_USE) then 
-      dxDrawTextOnElement(pedActual,"Pressione N para abrir o painel",1.2,20,255,255,255,255,1.3,"sans")
+     if(pedActual) then
+        dxDrawTextOnElement(pedActual,"Pressione N para abrir o painel",1.2,20,255,255,255,255,1.3,"sans")
+    
     end
+        end
 end
 
 
@@ -353,7 +367,12 @@ function PainelPM.onPoliceEnterCol(shape,matchingDimension)
    if(matchingDimension) then
       if source == localPlayer then
         if(getElementData(shape,DATA_IS_COL_SHOW)) then
-         
+            local playerVerify = getElementData(shape,DATA_PLAYER_SELECTED)
+
+            if(playerVerify:getData(DATA_IS_ALLOWED_TO_USE)) then
+                return
+            end
+           
             if not first then
                  addEventHandler("onClientRender",root,eventOnEnter)
              end
@@ -368,6 +387,10 @@ function PainelPM.onPoliceLeaveCol(shape,matchingDimension)
     if(matchingDimension) then
         if source == localPlayer then
             if(getElementData(shape,DATA_IS_COL_SHOW)) then
+                local playerVerify = getElementData(shape,DATA_PLAYER_SELECTED)
+                if(playerVerify:getData(DATA_IS_ALLOWED_TO_USE)) then
+                   return
+               end
                 removeEventHandler("onClientRender",root,eventOnEnter)
                 setElementData(source,DATA_PLAYER_SELECTED,nil)
                 pedActual = nil
@@ -457,10 +480,10 @@ function PainelPM:mousePressed(e)
                 if(number >= 0 and number <=6) then
                     triggerServerEvent ( "trySetNivel", resourceRoot,p,number)
                 else
-                    outputChatBox("#FF0000[SERVER]#FF000Informe um número de 0 até 6.")
+                    outputChatBox("#FF0000[SERVER]#FF0000Informe um número de 0 até 6.",255,255,255,true)
                 end
             else
-                outputChatBox("#FF0000[SERVER]#FF000Informe um número valido.")
+                outputChatBox("#FF0000[SERVER]#FF0000Informe um número valido.",255,255,255,true)
             end
 
            

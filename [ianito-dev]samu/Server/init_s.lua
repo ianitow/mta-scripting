@@ -14,13 +14,17 @@ function wastedWhenAnimON()
           toggleAllControls(source,true,true,true) 
           removeWhenDeath(source)
           source:setData(DATA_TO_ANIM,false)  
+          triggerClientEvent(source,"receiveFromServer",source,false)
           destroyBlipSAMU(source:getData(DATA_TO_COL))
+       
           
 end
 
 function removeWhenDeath(player)
     local col = player:getData(DATA_TO_COL)
     destroyBlipSAMU(col)
+    triggerClientEvent ( player, "destroyPNGHeart", player, x,y,z )
+    
     destroyElement(col)
     removeEventHandler("onPlayerWasted",player,wastedWhenAnimON)
 
