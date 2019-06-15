@@ -1,15 +1,11 @@
 <meta>
-    <info author="ianito" version="1.0" name="Detran" type="resource" />
+    <info author="ianito" version="1.2" name="Detran System" type="resource" />
     <file src="models/detran.dff"/>
-        <file src="models/detran.txd"/>
-    
-    <script src="main_s.lua" />
-    <script src="utils.lua"/>
-    <script src="commands_s.lua" />
+    <file src="models/detran.txd"/>
     <script src="config.lua" type="shared"/>
-    
+    <script src="utils.lua"/>
+    <script src="main_s.lua" />
+    <script src="commands_s.lua" /> 
     <script src="main_c.lua" type="client" />
- 
-    
     <script src="replace_models.lua" type="client" />
 </meta>

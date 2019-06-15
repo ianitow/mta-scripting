@@ -47,6 +47,8 @@ local commands =
                         setElementData(vehicleDetran,CAR_TOWED_ELEMENT,nil)
                         outputChatBox(COLOR_MESSAGE_ORANGE.."[DETRAN]:#FFFFFFCarro adicionado ao pátio.",player,255,255,255,true)
                         return true
+                    else
+                        outputChatBox(COLOR_MESSAGE_ORANGE.."[DETRAN]:#FFFFFFPatio lotado, por favor, libere espaço.",player,255,255,255,true)
                     end
                 else
                     outputChatBox(COLOR_MESSAGE_ORANGE.."[DETRAN]:#FF0000Este tipo de carro não é permitido o reboque.",player,255,255,255,true)

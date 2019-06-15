@@ -5,9 +5,9 @@
 	@description: Se caso você roubar(ou se eu vender ou doar), deixe meus creditos. Obg
 ]]--
 function drawText()
-    dxDraw3DText("Digite #FF0000/rebocar#FFFFFF para deixar o carro apreendido.",1535.75098, -2228.82739, 13.9688,1.2,nil,nil,12,true)
-    dxDraw3DText("#FF0000[DETRAN]#FFFFFF Skin.",1562.57068, -2219.04224, 13.94688,1.2,nil,nil,12,true)
-    dxDraw3DText("#FF0000[DETRAN]#FFFFFF Veículo de reboque.",    1562.57068, -2221.54224, 13.94688,1.2,nil,nil,12,true)
+    dxDraw3DText("Digite #FF0000/rebocar#FFFFFF para deixar o carro apreendido.",1603.71729, -1630.22583, 13.50546,1.2,nil,nil,12,true)
+    dxDraw3DText("#FF0000[DETRAN]#FFFFFF Skin.",pickupsPositions.skin[1],pickupsPositions.skin[2],pickupsPositions.skin[3]+1,1.2,nil,nil,12,true)
+    dxDraw3DText("#FF0000[DETRAN]#FFFFFF Veículo de reboque.",pickupsPositions.vehicle[1],pickupsPositions.vehicle[2],pickupsPositions.vehicle[3]+1,1.2,nil,nil,12,true)
 end
 addEventHandler("onClientRender", root,drawText)
 
