@@ -117,13 +117,7 @@ button:active{
     self.labelNameSuspect:setAlignment(Label.LEFT)
     self.panelInfoPlayer:add(self.labelNameSuspect)
 
-    self.labelHabilitacao = Label("Habilitação: #FF0000"..tostring(formatHabilitacao(localPlayer)))
-    self.labelHabilitacao:setForeground(tocolor(255,255,255,255))
-    self.labelHabilitacao:setBackground(tocolor(255,255,255,1))
-    self.labelHabilitacao:setScale(1)
-    self.labelHabilitacao:setBounds(self.labelNameSuspect:getX()+self.labelNameSuspect:getTextWidth()+50,self.labelNameSuspect:getY(),self.panelInfoPlayer:getWidth(),20)
-    self.labelHabilitacao:setAlignment(Label.LEFT)
-    self.panelInfoPlayer:add(self.labelHabilitacao)
+
 
     self.labelHealth = Label("Vida: #FF0000100%")
     self.labelHealth:setForeground(tocolor(255,255,255,255))
@@ -149,7 +143,22 @@ button:active{
     self.labelMoney:setAlignment(Label.LEFT)
     self.panelInfoPlayer:add(self.labelMoney)
 
-    self.dataRegistro = Label("Data de Registro: #DCDCDC18/04/2019")
+    self.labelHabilitacao = Label("Habilitação: #FF0000"..tostring(formatHabilitacao(localPlayer)))
+    self.labelHabilitacao:setForeground(tocolor(255,255,255,255))
+    self.labelHabilitacao:setBackground(tocolor(255,255,255,1))
+    self.labelHabilitacao:setScale(1)
+    self.labelHabilitacao:setBounds(self.labelNameSuspect:getX()+self.labelNameSuspect:getTextWidth()+50,self.labelHealth:getY(),self.panelInfoPlayer:getWidth(),20)
+    self.labelHabilitacao:setAlignment(Label.LEFT)
+    self.panelInfoPlayer:add(self.labelHabilitacao)
+
+    self.labelCountJailed = Label("Ja foi preso: #FF0000".."0".."#FFFFFF vezes")
+    self.labelCountJailed:setForeground(tocolor(255,255,255,255))
+    self.labelCountJailed:setBackground(tocolor(255,255,255,1))
+    self.labelCountJailed:setScale(1)
+    self.labelCountJailed:setBounds(self.labelArmor:getX()+self.labelArmor:getTextWidth()+50,self.labelArmor:getY(),self.panelInfoPlayer:getWidth(),20)
+    self.labelCountJailed:setAlignment(Label.LEFT)
+    self.panelInfoPlayer:add(self.labelCountJailed)
+    self.dataRegistro = Label("Nível de Procurado: #FF0000")
     self.dataRegistro:setForeground(tocolor(255,255,255,255))
     self.dataRegistro:setBackground(tocolor(255,255,255,1))
     self.dataRegistro:setScale(1)
@@ -322,6 +331,8 @@ button:active{
        
     end
     addEventHandler("onClientKey", root, self.onPlayerPressKey)
+
+
     self:setVisible(false)
     return self
 
@@ -331,16 +342,20 @@ function PainelPM:updateInfos(selected)
     local health = getElementHealth(selected)
     local armor = getPedArmor(selected)
     local money = getPlayerMoney(selected)
+    local countJailed = getElementData(selected,DATA_COUNT_JAILED) or 0
+    local stars = getElementData(selected,DATA_STAR_PLAYER) or 0
     local isHandCuff =  getElementData(selected,DATA_IS_PLAYER_HANDCUFF)
     if(isHandCuff) then
         self.buttonAlgemar:setLabel("DESALGEMAR")
     else
         self.buttonAlgemar:setLabel("ALGEMAR")
     end
+    self.dataRegistro:setText("Nível de Procurado: #FF0000"..tostring(stars))
     self.labelHealth:setText("Vida: #FF0000"..tostring(health).."%")
     self.labelNameSuspect:setText("Nome: #FF0000"..tostring(selected.name))
     self.labelArmor:setText("Colete: #DCDCDC"..tostring(armor).."%")
     self.labelMoney:setText("Dinheiro: #00FF00R$"..tostring(money))
+    self.labelCountJailed:setText("Ja foi preso: #FF0000"..tostring(countJailed).."#FFFFFF vezes")
     self.labelHabilitacao:setText("Habilitação: #FF0000"..tostring(formatHabilitacao(selected)))
   
 end
@@ -368,10 +383,10 @@ function PainelPM.onPoliceEnterCol(shape,matchingDimension)
       if source == localPlayer then
         if(getElementData(shape,DATA_IS_COL_SHOW)) then
             local playerVerify = getElementData(shape,DATA_PLAYER_SELECTED)
-
-            if(playerVerify:getData(DATA_IS_ALLOWED_TO_USE)) then
-                return
-            end
+            
+            -- if(playerVerify:getData(DATA_IS_ALLOWED_TO_USE)) then
+            --     return
+            -- end
            
             if not first then
                  addEventHandler("onClientRender",root,eventOnEnter)
@@ -388,9 +403,9 @@ function PainelPM.onPoliceLeaveCol(shape,matchingDimension)
         if source == localPlayer then
             if(getElementData(shape,DATA_IS_COL_SHOW)) then
                 local playerVerify = getElementData(shape,DATA_PLAYER_SELECTED)
-                if(playerVerify:getData(DATA_IS_ALLOWED_TO_USE)) then
-                   return
-               end
+            --     if(playerVerify:getData(DATA_IS_ALLOWED_TO_USE)) then
+            --        return
+            --    end
                 removeEventHandler("onClientRender",root,eventOnEnter)
                 setElementData(source,DATA_PLAYER_SELECTED,nil)
                 pedActual = nil
@@ -459,7 +474,8 @@ function PainelPM:mousePressed(e)
             self:setVisible(false)
         elseif(e.source == self.buttonPorte) then
             local p = getElementData(localPlayer,DATA_PLAYER_SELECTED)
-           
+            triggerServerEvent ( "trySetNivel", resourceRoot,p,tonumber(self.fieldRegister:getText()))
+            self.dataRegistro:setText("Nível de Procurado: #FF0000"..tostring(self.fieldRegister:getText()))
             if(self.panelSetNivel:isVisible() ) then
                
                 self.panelSetNivel:setVisible(false)

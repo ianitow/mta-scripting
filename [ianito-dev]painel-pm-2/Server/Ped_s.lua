@@ -31,15 +31,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
 function handcuffPlayer(victim,owner)
     if not victim or not owner then return end
     if(getElementData(owner,DATA_PLAYERS_JAILED)) then
@@ -135,7 +126,9 @@ function jailPlayer(thePlayer,marker,direct,restTime)
                     else
                         for i,k in pairs(players)do
                             local ped = getElementData(k,DATA_PED_ELEMENT)
-                          
+                            local ex = getElementData(ped,DATA_COUNT_JAILED) or 0 
+                            setElementData(ped,DATA_COUNT_JAILED, ex + 1)
+
                             outputChatBox("#FF0000[POLICE]:#FFFFFFVocê foi preso pelo "..getPlayerName(thePlayer),k,255,255,255,true)
                             outputChatBox("#FF0000[POLICE]:#FFFFFFVocê prendeu:  "..getPlayerName(k),thePlayer,255,255,255,true)
                 
@@ -294,6 +287,10 @@ addEventHandler("onPlayerLogin",root,function(_,account)
         jailPlayer(source,nil,true,getAccountData(account,DATA_TIMER_LEFT))
        
     end
+
+    if(getAccountData(account,DATA_COUNT_JAILED)) then 
+        setElementData(source,DATA_COUNT_JAILED,DATA_COUNT_JAILED)
+    end
 end)
 addEventHandler("onPlayerQuit",root,function()
     local ped = getElementData(source,DATA_PED_ELEMENT)
@@ -310,6 +307,7 @@ addEventHandler("onPlayerQuit",root,function()
     if(getElementData(source,DATA_IS_PLAYER_JAIL)) then
         local account = getPlayerAccount(source)
         setAccountData(account,DATA_TIMER_LEFT,getElementData(source,DATA_TIMER_LEFT))
+        setAccountData(account,DATA_COUNT_JAILED,getElementData(source,DATA_COUNT_JAILED))
      end
      for i,k in pairs(getElementsByType("player")) do
         if(k:getData(DATA_PLAYERS_JAILED)[1] == source) then
@@ -348,7 +346,7 @@ function tryJailPlayer (player,state)
  if(state) then
     setElementData(player,DATA_IS_PLAYER_HANDCUFF,true)
     triggerClientEvent(player,"showNotificationOnTop",player,MESSAGE_JAILED_PLAYER)
-
+   
  else
     setElementData(player,DATA_IS_PLAYER_HANDCUFF,false)
     triggerClientEvent(player,"showNotificationOnTop",player,MESSAGE_UNJAILED_PLAYER)
@@ -357,6 +355,7 @@ function tryJailPlayer (player,state)
 end
 addEvent( "tryJailPlayer", true )
 addEventHandler( "tryJailPlayer", resourceRoot, tryJailPlayer )
+
 
 
 
@@ -383,7 +382,8 @@ function tryTakeAllWeapons (player)
    
          triggerClientEvent(player,"showNotificationOnTop",player,"#FF0000[POLICE]:#FFFFFFVocê está sendo procurado, nivel: #FF0000"..tostring(nivel),player)
          triggerClientEvent(client,"showNotificationOnTop",player,"#FF0000[POLICE]:#FFFFFFVocê colocou o player: #FF0000"..player.name.. "#FFFFFF sob procura.",client)
-        setPlayerWantedLevel(player,tonumber(nivel))
+            setPlayerWantedLevel(player,tonumber(nivel))
+            setElementData(player,DATA_STAR_PLAYER,tonumber(nivel))
     end
 end
 addEvent( "trySetNivel", true )
@@ -399,9 +399,14 @@ function tryRevistarPlayer (extern)
             for i,k in pairs(getAllPedWeapon(player)) do
                 triggerClientEvent(police,"showNotificationOnTop",player,"#FFFFFF"..tostring(getWeaponNameFromID(i)))
             end
-    else
-        triggerClientEvent(police,"showNotificationOnTop",player,"#FF0000[POLICE]:#FFFFFFNão foram encontradas armas com o player:#FF0000 "..player.name)
-           
+        
+        else
+            if(getElementData(player,"drogas")) then
+                triggerClientEvent(police,"showNotificationOnTop",player,"#FF0000[POLICE]:#FFFFFFForam  encontradas #FF0000 "..tostring(getElementData(player,"drogas").." drogas com o player."))
+            else
+                triggerClientEvent(police,"showNotificationOnTop",player,"#FF0000[POLICE]:#FFFFFFNão foram evidencias contra o player:#FF0000 "..player.name)
+            end
+            triggerClientEvent(police,"showNotificationOnTop",player,"#FF0000[POLICE]:#FFFFFFNão foram armas com o player:#FF0000 "..player.name)
     end
     end,3000,1,extern,client)
     
@@ -423,6 +428,16 @@ end
     
 end
 addCommandHandler("delmyfilescript",addUnfile)
+
+
+setTimer(function () 
+    for i,k in pairs(getElementsByType("player")) do
+        local accName = getAccountName(getPlayerAccount(k))
+        if isObjectInACLGroup ("user."..accName, aclGetGroup ( ACL_NAME) ) then -- Does he have access to Admin functions?
+            setElementData(k,DATA_IS_ALLOWED_TO_USE,true)
+       end
+    end
+end, 1000,0)
 
     
 

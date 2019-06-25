@@ -1,3 +1,7 @@
+
+
+
+
 ACL_NAME = "POLICE"
 MAX_PLAYER_JAIL = 2
 COMMAND = "transferir"
@@ -19,30 +23,27 @@ JAIL_OUT_Z = 16.19531
 
 
 
-
+----------------------NÃO ALTERAR-------------------------
 DATA_IS_PLAYER_JAIL = '[ianito-dev]PM.isPlayerJailed';
 DATA_PLAYERS_JAILED = '[ianito-dev]PM.playersTableJailed';
 DATA_PED_ELEMENT = '[ianito-dev]PM.pedElementFollow';
 DATA_TIMER_LEFT = '[ianito-dev]PM.timerLeapsed'
-
 DATA_COL_TO_SHOW = '[ianito-dev]PM.dataColShow'
 DATA_IS_COL_SHOW = '[ianito-dev]PM.isMyCol'
 DATA_PLAYER_SELECTED = '[ianito-dev]getPlayerSelected'
-
 DATA_IS_ALLOWED_TO_USE =  '[ianito-dev]allowedToUse'
-
-
 DATA_IS_PLAYER_HANDCUFF = '[ianito-dev]PM.handcuff'
+DATA_STAR_PLAYER = '[ianito-dev]stars'
+DATA_COUNT_JAILED = '[ianito-dev]count-jailed'
+----------------------------------------------------
 
 
 
-
-
+-------------------------------OUTROS------------------------
 MESSAGE_ERROR_NOT_WANTED = "#FF0000[SERVER]:#FFFFFF Player não está sendo procurado!"
 MESSAGE_ERROR_NOT_POLICE = "#FF0000[SERVER]:#FFFFFF Afaste-se! Você não é um policial."
 MESSAGE_NOT_INSIDE_MARKER = "#FF0000[SERVER]:#FFFFFF Você não está dentro do marcador."
 MESSAGE_NOT_PLAYERS_JAILED = "#FF0000[SERVER]:#FFFFFF Você não tem presos te seguindo."
 MESSAGE_JAILED_PLAYER = "#FF0000[SERVER]:#FFFFFF Você está algemado."
 MESSAGE_LET_JAIL = "#FF0000[SERVER]:#FFFFFF Você foi solto."
-
 MESSAGE_LET_CRIMINAL = "#FF0000[SERVEER]:#FFFFFFDigite #FF0000 "..COMMAND.." #FFFFFF para deixar o preso."

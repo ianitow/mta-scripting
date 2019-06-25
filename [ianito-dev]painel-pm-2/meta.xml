@@ -5,15 +5,15 @@
 	<oop>true</oop>
 		<include resource="notification" />
 		<file src="Gfx/police-icon.png"/>
-			<script src="Shared/config.lua" type="shared" 	/>  
+		<script src="Shared/config.lua" type="shared" 	/>  
 		<script src="Shared/core.luac" type="shared" /> 
 		<script src="Shared/framework.lua" type="shared" />
-	
+		<script src="Client/Ped_c.lua" type="client" 	/> 
 	
 		<script src="Client/PainelPM.lua" type="client" 	/> 
 		<script src="Client/TimerJail.lua" type="client" 	/> 
 	
 		<script src="Server/Ped_s.lua" type="server" 	/> 
-	<script src="Client/Ped_c.lua" type="client" 	/> 
+	
 	
 </meta>
